@@ -33,7 +33,7 @@ The demo moves a Wednesday gym session and its linked meal/clothing preparations
 
 ## Team and GitHub
 
-The supplied repository was empty when cloned. The initial foundation passed independent review. Bootstrap publication was attempted but is blocked by local GitHub authentication; the commits are saved locally. See [GitHub setup](docs/GITHUB_SETUP.md) for branch, pull request, and repository settings. Dated evidence belongs in [delivery reports](docs/reports/).
+The supplied repository was empty when cloned. The initial foundation passed independent review. The reviewed foundation has been pushed to `main`, and its GitHub checks passed. GitHub CLI authentication is working for future branch pushes and review operations. See [GitHub setup](docs/GITHUB_SETUP.md) for branch, pull request, and repository settings. Dated evidence belongs in [delivery reports](docs/reports/).
 
 An hourly Codex task continuation is active for the coordinated development team. It works on a bounded milestone slice, with implementation, independent review, tests, commits, and reports. It does not authorize automatic merging or deployment. Scheduling is managed by the Codex app, not a service installed in this repository.
 

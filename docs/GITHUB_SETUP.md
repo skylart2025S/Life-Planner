@@ -11,7 +11,7 @@ The repository was accessible through Git and empty when cloned on 2026-11-19. N
 3. Commit coherent completed units with tests and relevant documentation. Push the task branch; open a pull request with its review report.
 4. Observe GitHub checks, resolve review findings, and merge only under the agreed merge policy. Current default: user authorizes merges; agents may prepare commits, branches, and PRs.
 
-The GitHub connector is not connected in this session. Git access can clone/push the repository, but does not expose PRs, issue discussions, or check results. Connect the GitHub plugin or authenticated GitHub CLI to enable those parts of the team workflow. Do not claim a PR or CI result based only on a successful push.
+GitHub CLI is installed and authenticated. Git push and authenticated GitHub API access were verified during bootstrap publication; the foundation workflow passed. Use the authenticated CLI for branches, pull requests, issues, and check results. Observe each PR/check result directly rather than inferring it from a successful push.
 
 ## Repository settings still needed
 

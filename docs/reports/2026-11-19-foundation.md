@@ -1,6 +1,6 @@
 # Foundation milestone — 2026-11-19
 
-Status: **locally accepted; GitHub publication blocked by authentication**.
+Status: **M0 complete: independently reviewed, published, and passing GitHub checks**.
 
 ## Delivered
 
@@ -18,22 +18,23 @@ The supplied repository was cloned empty from https://github.com/skylart2025S/Li
 | Behavior tests | Engineer and independent reviewer each ran 27 tests successfully |
 | Demo and review-context generator | Independently passed |
 | Documentation links and whitespace | Coordinator checks passed |
-| GitHub push | Attempted `main`; failed because the local Git credential prompt could not supply a password; no successful publication observed |
-| Remote CI / PRs / branch protection | Unobserved; not configured or verified by this task |
+| GitHub push | Successfully pushed `main`; GitHub commit API verified `c9374d1682c0f95ed94ef3b5c2e43ea0c83ec216` |
+| Remote CI | [Foundation checks](https://github.com/skylart2025S/Life-Planner/actions/runs/44560113578) completed successfully for `c9374d1` |
+| PRs / branch protection | Initial bootstrap pushed directly after review; no PR created and branch protection not configured |
 | Hourly continuation | App confirmed ACTIVE `ai-life-planner-development-team`; configuration verified, no scheduled execution claimed |
 
-The first main push did not complete. Do not report a remote commit or open PR until confirmed. No credential values are stored in this report. A working GitHub sign-in/connection is needed to publish and inspect remote checks.
+Earlier push attempts failed authentication. After the user configured GitHub CLI browser sign-in, the push succeeded and remote checks were observed passing. No credential values are stored in this report.
 
 ## Operating model
 
 The coordinator selects one bounded backlog slice per hourly run, assigns explicit ownership, uses a separate reviewer, resolves findings, and commits code plus documentation. Each run updates status and dated reports. Task branches may be pushed when authentication is available; automatic merges and deployments are not authorized. Notifications are limited to meaningful completion, failure, or required decisions. No always-running agent daemon is installed in the product.
 
-## Next assignment and blocker
+## Next assignment
 
-M0 local acceptance is complete; publication and remote checks remain pending. Restore GitHub authentication, push the reviewed bootstrap commits, and observe CI. Continue with a bounded LP-101 transactional-persistence slice locally if publication remains blocked; preserve its branch and report without claiming remote delivery. Avoid repeatedly retrying unchanged authentication failures.
+M0 is complete and the authentication blocker is resolved. Continue with a bounded LP-101 transactional-persistence slice on a task branch. Independently review changes, push the branch, create a PR, and observe its checks.
 
 Next product milestone: M1 durable private plans (LP-101/102). The foundation has no persistent storage, authentication, HTTP API, UI, live model, calendar connection, recurrence, undo, or deployment. See TEAM_CHARTER.md for M0–M4 acceptance gates.
 
-## User-requested connection retry
+## Connection resolution
 
-Retried publishing `main` on 2026-11-19. GitHub returned invalid username/token; the retry did not publish the branch. Read-only fallback checks found no available authenticated CLI/token/helper or loaded SSH identity. This updates the earlier credential-prompt failure: the current blocker is rejected HTTPS credentials. The team must obtain a working repository-write connection before claiming remote delivery.
+The user configured GitHub CLI authentication and requested publication. `git push -u origin main` succeeded. An authenticated GitHub API read confirmed the remote commit. The [CI run](https://github.com/skylart2025S/Life-Planner/actions/runs/44560113578) completed successfully at 2026-11-19T15:54:55Z. These are observed remote results, separate from the earlier local review evidence.
