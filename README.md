@@ -1,8 +1,18 @@
-# AI Life Planner — foundation
+# AI Life Planner
 
 A chat-driven calendar that keeps routines, meals, and clothing plans aligned when life changes.
 
-This is a **project foundation**, not a deployed application. It includes a runnable planning core, PostgreSQL persistence, project specifications, a coordinated development team workflow, and GitHub CI/templates. The repository is https://github.com/skylart2025S/Life-Planner. No live AI provider, calendar account, or hosted production database is connected.
+This is an **early local prototype**, not a deployed application. It includes an interactive sample calendar, an authenticated planning API, PostgreSQL persistence, a deterministic planning core, and a coordinated development team workflow. The repository is https://github.com/skylart2025S/Life-Planner. No live AI provider, calendar account, or hosted production database is connected.
+
+## Try the visible prototype
+
+From the repository root:
+
+```sh
+python3 -m http.server 8765 --bind 127.0.0.1 --directory apps/web
+```
+
+Open [Life Planner locally](http://127.0.0.1:8765). Try moving Wednesday gym to Thursday, preview all three linked changes, then confirm or cancel. The screen uses sample data and a predefined interaction; it does not yet call the authenticated API or live AI. Reloading resets its state. See [browser prototype](apps/web/README.md) and [API setup](apps/api/README.md).
 
 ## Start here
 
@@ -12,8 +22,10 @@ This is a **project foundation**, not a deployed application. It includes a runn
 4. Run the demo and tests from this directory with Python 3.12 or newer:
 
 ```sh
-python3 -m life_planner.demo
-python3 -m unittest discover -s tests -v
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m life_planner.demo
+.venv/bin/python -m unittest discover -s tests -v
 python3 scripts/review_context.py
 ```
 
@@ -30,7 +42,9 @@ For durable plans and the PostgreSQL integration tests, follow [persistence setu
 | `tests/` | Behavior tests for rescheduling, conflicts, ownership, and retries |
 | `agents/` | Role briefs and review/handoff templates for coding agents |
 | `docs/` | Requirements, architecture, API draft, roadmap, decisions, progress |
-| `apps/web/`, `apps/api/`, `workers/` | Documented boundaries for future implementation |
+| `apps/web/` | Interactive sample week, planning panel, linked-change preview and confirmation |
+| `apps/api/` | Authenticated typed planning API; trusted local public keys |
+| `workers/` | Future external-calendar synchronization boundary |
 | `scripts/review_context.py` | Local repository/spec context packet for a review agent |
 | `.github/` | CI workflow, issue template, pull request checklist |
 
@@ -38,6 +52,6 @@ For durable plans and the PostgreSQL integration tests, follow [persistence setu
 
 The supplied repository was empty when cloned. The initial foundation passed independent review. The reviewed foundation has been pushed to `main`, and its GitHub checks passed. GitHub CLI authentication is working for future branch pushes and review operations. See [GitHub setup](docs/GITHUB_SETUP.md) for branch, pull request, and repository settings. Dated evidence belongs in [delivery reports](docs/reports/).
 
-An hourly Codex task continuation is active for the coordinated development team. It works on a bounded milestone slice, with implementation, independent review, tests, commits, and reports. It does not authorize automatic merging or deployment. Scheduling is managed by the Codex app, not a service installed in this repository.
+An hourly Codex task continuation is active for the coordinated development team. It works on a bounded milestone slice, with implementation, independent review, tests, commits, and reports. The user authorized merging independently reviewed PRs once all automated checks pass on 2026-11-19. Deployments remain unauthorized. Scheduling is managed by the Codex app, not a service installed in this repository.
 
 The parent project mirror and its `sources/` remain untouched. See [status](docs/STATUS.md) and the latest report for observed commit, push, and check results.

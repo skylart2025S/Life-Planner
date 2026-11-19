@@ -15,7 +15,7 @@ flowchart LR
   Worker --> Providers[Calendar providers]
 ```
 
-The planning core, adapter interfaces, and PostgreSQL storage for plans/proposals/history/outbox records exist today. The web/API, intent adapter implementation, and outbox delivery worker remain planned boundaries. See [persistence details](PERSISTENCE.md).
+The planning core, adapter interfaces, and PostgreSQL storage for plans/proposals/history/outbox records exist today. The authenticated FastAPI service is implemented in `apps/api/`; the sample-only browser UI is implemented in `apps/web/`. The intent adapter and outbox delivery worker remain planned. See [persistence details](PERSISTENCE.md).
 
 ## Modules and ownership boundaries
 
@@ -40,7 +40,7 @@ The planning core, adapter interfaces, and PostgreSQL storage for plans/proposal
 - ProviderConnection: owner, provider, encrypted tokens, sync cursor.
 - OutboxEvent: owner, change set, operation ID, delivery status and retry metadata.
 
-PostgreSQL storage indexes items by owner/plan/start and enforces composite relationship keys. Each service operation locks the plan row before taking a snapshot; apply commits items, revision, audit history, a scoped retry receipt, and an outbox event atomically. Owner identity is still an explicit trusted parameter: there is no authentication or row-level security. The original in-memory Planner remains available and is deliberately single-process, nonpersistent, and not thread-safe. Production pooling, timeouts, account lifecycle, and backup/restore are still required.
+PostgreSQL storage indexes items by owner/plan/start and enforces composite relationship keys. Each service operation locks the plan row before taking a snapshot; apply commits items, revision, audit history, a scoped retry receipt, and an outbox event atomically. Storage accepts a trusted owner parameter. The API derives it from a verified issuer/subject pair; there is no database row-level security. The original in-memory Planner remains available and is deliberately single-process, nonpersistent, and not thread-safe. The API configures connection/lock/statement timeouts and a per-process concurrency cap. Production pooling, capacity measurements, account lifecycle and backup/restore remain required.
 
 ## Time and scheduling semantics
 

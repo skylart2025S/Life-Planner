@@ -1,21 +1,50 @@
-# API contract — design only
+# Planning API — LP-102 contract
 
-No HTTP server or authentication exists yet. These routes define the intended next boundary.
+The FastAPI service uses the durable PostgreSQL planner. It verifies signed access tokens using a server-configured local public-key set. No live login provider is connected. The browser sample is currently separate from this service.
 
-| Route | Input | Result |
+## Implemented routes
+
+| Route | Input | Success |
 | --- | --- | --- |
-| `GET /v1/plan?from=...&to=...` | Bounded date interval | Owner's plan items, timezone, revision |
-| `POST /v1/chat` | Message and conversation ID | Clarification or proposal preview |
-| `POST /v1/proposals` | `move_item` command with item ID and aware new start | Proposal ID, base revision, changes, explanation |
-| `POST /v1/proposals/{id}/apply` | Explicit confirmation and idempotency key | Applied revision and sync status |
-| `POST /v1/changes/{id}/undo-proposal` | Change ID | New proposal, validated against the current plan |
+| `GET /health` | No authentication | `200 {"status":"ok"}`; process liveness only |
+| `POST /v1/plans/{plan_id}` | `{ "items": [...] }` | `201 {plan_id, revision, items}`; create only, Location header |
+| `GET /v1/plans/{plan_id}?from=...&to=...` | Aware interval, positive and at most 31 days | `200 {plan_id, revision, items}` |
+| `POST /v1/plans/{plan_id}/proposals` | `{ "type":"move_item", "item_id":"gym", "new_start":"2026-11-26T18:00:00-05:00" }` | `201 {plan_id, proposal_id, base_revision, changes, explanation}` |
+| `POST /v1/plans/{plan_id}/proposals/{proposal_id}/apply` | `{ "confirmed": true }`, one `Idempotency-Key` header | `200 {plan_id, proposal_id, applied_revision}` |
 
-Derive owner identity from authentication, never body fields. Validate request size, time ranges, allowed commands, and timestamps before domain execution. Map malformed commands to 400, missing authentication to 401, inaccessible/missing resources to 404, conflicts/stale proposals to 409, quotas to 429, and temporary dependency failures to 503. Do not leak other users' IDs or event titles in errors.
+Every plan route requires `Authorization: Bearer <access-token>`. Owner identity is a SHA-256 namespace of canonical JSON `[verified issuer, verified subject]`; clients cannot supply an owner. Item responses omit the internal owner. Create items contain `id,title,kind,start,end,linked_to?,fixed?`. Proposal changes contain `before` and `after` items. Timestamps in responses are UTC. Reads select overlapping items from one complete plan snapshot: this is not database pagination.
 
-Example command:
+Apply requires literal JSON `true`; strings and numbers are rejected. Retrying a proposal with the same key returns its original applied revision, even after later changes. Reusing the key for another proposal is a conflict. An applied revision is not a claim about calendar synchronization; the outbox has no dispatcher yet.
 
-```json
-{"type":"move_item","item_id":"gym","new_start":"2026-11-26T18:00:00-05:00"}
-```
+## Identity contract
 
-The PostgreSQL storage layer now provides durable retry receipts scoped to owner/plan/key, transactional apply, audit history, and rollback tests. An apply retry returns the original applied revision even if subsequent changes have occurred. Before hosting, implement authentication, HTTP request validation/error mapping, proposal expiration, connection limits/timeouts, and retention/deletion policy.
+Trusted configuration: `DATABASE_URL`, `AUTH_ISSUER`, `AUTH_AUDIENCE`, `AUTH_JWKS_PATH`. Missing settings or unusable public keys prevent startup. The service does not issue tokens, store passwords, discover an issuer or fetch token-supplied URLs. It supports RS256 JWT access tokens with `typ` equal to `at+jwt` or `application/at+jwt`, a known `kid`, exact configured issuer, configured API audience, and required `iss,sub,aud,exp,iat,client_id,jti` claims. Expiry, optional not-before, issuance time and claim types are checked. ID tokens, unsigned tokens and other algorithms are rejected.
+
+The local JWKS must contain unique RSA signing key IDs, public keys of at least 2048 bits and compatible signing metadata. Keys reload on process restart; automatic remote key rotation is not implemented. Before live accounts, select a compatible provider, register the audience and restrict it to intended user grants/scopes. A verified subject alone does not establish whether a provider issued a human-user or machine token. Account linking/deletion and production identity policy remain future work.
+
+The access-token profile is based on [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html#section-4); verification uses [PyJWT](https://pyjwt.readthedocs.io/en/stable/usage.html).
+
+## Bounds and errors
+
+- JSON bodies at most 64 KiB, including chunked/no-length bodies, with a 10-second total read deadline; extra fields and duplicate JSON members are rejected. POST requires `application/json`.
+- IDs contain 1–128 ASCII letters, digits, underscores or hyphens. Titles are 1–200 characters, kinds 1–32, and create accepts at most 500 items. `fixed` is a strict Boolean.
+- Dates are explicit-offset RFC3339 strings with seconds and local/UTC years 2000–2100. Reads require exactly one `from` and `to`. Idempotency keys contain 1–128 visible ASCII characters without spaces. Duplicate authorization/key headers are rejected.
+- Private responses use `Cache-Control: no-store`; request IDs are generated by the service. Errors never echo submitted items, tokens or database exception text.
+- At most 16 concurrent requests per process; 5-second connection/statement and 2-second lock timeouts. These are local safeguards, not distributed per-user quotas or capacity benchmarks. No CORS origins are enabled.
+
+Error envelope: `{ "error": { "code": "...", "message": "...", "request_id": "..." } }`.
+
+| Status | Meaning |
+| --- | --- |
+| 400 | Invalid JSON, model, identifier, date window, confirmation or key |
+| 401 | Missing/invalid access token; `WWW-Authenticate: Bearer` |
+| 404 | Missing or inaccessible resource, with the same public message |
+| 408 | Request body was not received within the 10-second deadline |
+| 409 | Existing plan, schedule conflict, fixed/dependent move, stale proposal or reused key |
+| 413 / 415 | Body too large / unsupported media type |
+| 500 | Unexpected internal error or invalid persisted proposal |
+| 503 | Temporary database failure/timeout or process capacity exceeded |
+
+After an uncertain apply response, retry with the original idempotency key. Do not assume a timeout means the transaction did not commit. The adapter maps only known domain errors; unknown failures remain internal errors.
+
+Interactive OpenAPI documentation is served at `/docs` when the API is running. Chat interpretation, undo/history routes, live login, recurrence, external synchronization and deployment are outside LP-102.
