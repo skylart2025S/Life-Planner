@@ -18,4 +18,4 @@ Example command:
 {"type":"move_item","item_id":"gym","new_start":"2026-11-26T18:00:00-05:00"}
 ```
 
-Before hosting, add durable idempotency records scoped to user/request, transactional storage, proposal expiration, audit history, and rollback tests. An apply retry should return the original applied revision even if subsequent changes have occurred.
+The PostgreSQL storage layer now provides durable retry receipts scoped to owner/plan/key, transactional apply, audit history, and rollback tests. An apply retry returns the original applied revision even if subsequent changes have occurred. Before hosting, implement authentication, HTTP request validation/error mapping, proposal expiration, connection limits/timeouts, and retention/deletion policy.

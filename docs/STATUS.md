@@ -9,10 +9,11 @@ Updated: 2026-11-19.
 - Added a standard-library Python core for previewing and applying event/dependency moves, conflict and owner checks, stale revision rejection, and in-process retry safety.
 - Added a synthetic demo, behavior tests, local review-context generator, GitHub CI and contribution templates.
 - Planning engineer committed core and tests as `95b31c3`; independent reviewer reran all 27 tests and the demo successfully. GitHub foundation checks passed for `c9374d1`: [run](https://github.com/skylart2025S/Life-Planner/actions/runs/44560113578).
+- On branch `agent/LP-101-persistent-plans`: PostgreSQL storage, checked migrations, durable proposals/retry receipts, atomic audit/outbox recording, and real database tests. QA and the independent reviewer each passed all 46 tests with zero skips on PostgreSQL 16.15; final commit review and remote checks are pending.
 
 ## Not implemented
 
-Live product AI calls, persistent storage, authentication, HTTP API, frontend, recurring routines, recommendation generation, calendar integration, undo, and deployments. The foundation CI workflow is published and passed for `c9374d1`.
+Live product AI calls, authentication, HTTP API, frontend, recurring routines, recommendation generation, calendar integration, undo, and deployments. Persistence is implemented on the LP-101 branch and is not yet merged. The foundation CI workflow is published and passed for `c9374d1`.
 
 ## Development team
 
@@ -20,7 +21,7 @@ The coordinator started engineering, team-operations, and independent-review age
 
 ## Next task
 
-LP-101: transactional persistence. First review the provisional stack and API draft against any original detailed specifications the user supplies. Select the frontend and authentication approach before LP-102/103.
+Finish LP-101 independent review and publish its PR with observed remote CI. After authorized integration, select the authentication approach and implement LP-102. Choose the frontend approach before LP-103. Continue reviewing provisional choices against any original detailed specifications the user supplies.
 
 ## Handoff
 

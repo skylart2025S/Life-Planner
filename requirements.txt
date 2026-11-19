@@ -1,0 +1,3 @@
+# PostgreSQL adapter; the planning demo itself remains standard-library only.
+psycopg[binary]==3.3.9
+typing-extensions==4.16.0
