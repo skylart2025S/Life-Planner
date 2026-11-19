@@ -1,0 +1,8 @@
+---
+description: Shared AI Life Planner development and review workflow
+alwaysApply: true
+---
+
+Read and follow the repository-root AGENTS.md for all work in this project.
+Use docs/PRODUCT_SPEC.md for acceptance criteria and docs/STATUS.md for current implementation limits.
+Do not turn a proposed architecture or provider choice into a confirmed user requirement.
