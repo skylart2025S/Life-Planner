@@ -2,7 +2,7 @@
 
 A chat-driven calendar that keeps routines, meals, and clothing plans aligned when life changes.
 
-This is a **project foundation**, not a deployed application. It includes a runnable planning core, project specifications, a coordinated development team workflow, and GitHub CI/templates. The repository is https://github.com/skylart2025S/Life-Planner. No AI provider for the product, calendar account, or database is connected yet.
+This is a **project foundation**, not a deployed application. It includes a runnable planning core, PostgreSQL persistence, project specifications, a coordinated development team workflow, and GitHub CI/templates. The repository is https://github.com/skylart2025S/Life-Planner. No live AI provider, calendar account, or hosted production database is connected.
 
 ## Start here
 
@@ -19,11 +19,14 @@ python3 scripts/review_context.py
 
 The demo moves a Wednesday gym session and its linked meal/clothing preparations to Thursday, previews the changes, then explicitly applies them. It uses fixtures and deterministic rules, not a language model. Context reports are written to `reports/` and work even before Git initialization.
 
+For durable plans and the PostgreSQL integration tests, follow [persistence setup](docs/PERSISTENCE.md). The commands above run the domain tests; database tests skip unless the test database is configured. CI configures PostgreSQL and runs both suites.
+
 ## Layout
 
 | Path | Purpose |
 | --- | --- |
-| `life_planner/` | Working domain core and integration interfaces |
+| `life_planner/` | Working domain core, PostgreSQL storage, and integration interfaces |
+| `migrations/` | Versioned PostgreSQL schema with checksum tracking |
 | `tests/` | Behavior tests for rescheduling, conflicts, ownership, and retries |
 | `agents/` | Role briefs and review/handoff templates for coding agents |
 | `docs/` | Requirements, architecture, API draft, roadmap, decisions, progress |

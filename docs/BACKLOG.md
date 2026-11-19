@@ -4,8 +4,8 @@ Order reflects dependencies; estimates and provider choices remain open.
 
 | ID | Task | Acceptance criteria | Depends on |
 | --- | --- | --- | --- |
-| LP-100 | Foundation | Specs, agent briefs, local demo/tests, CI scaffold | Done locally |
-| LP-101 | Persistent plans | PostgreSQL migrations; atomic revision check, durable proposal/apply retry, audit/outbox transaction; concurrency and restart tests | LP-100 |
+| LP-100 | Foundation — integrated | Specs, agent briefs, local demo/tests, CI scaffold; published main with passing checks | Complete |
+| LP-101 | Persistent plans — reviewed in PR #1 | PostgreSQL migrations; atomic revision check, durable proposal/apply retry, audit/outbox transaction; 46 local tests passed with real PostgreSQL; independent review accepted and remote CI passed | LP-100; integration pending |
 | LP-102 | Authenticated API | Authentication-derived owner; typed endpoints; cross-user access and conflict tests; bounded requests | LP-101 |
 | LP-103 | Calendar web UI | Week view, chat panel, before/after preview, explicit confirmation, loading/error states; accessibility checks | LP-102; frontend decision |
 | LP-104 | Chat interpretation | Provider adapter returns validated move/clarification; synthetic evaluation set; timeout and malformed-output tests; cost limits | LP-102; model decision |

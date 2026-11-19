@@ -15,7 +15,7 @@ flowchart LR
   Worker --> Providers[Calendar providers]
 ```
 
-Only the planning core and adapter interfaces exist today. Everything else in the diagram is a planned boundary.
+The planning core, adapter interfaces, and PostgreSQL storage for plans/proposals/history/outbox records exist today. The web/API, intent adapter implementation, and outbox delivery worker remain planned boundaries. See [persistence details](PERSISTENCE.md).
 
 ## Modules and ownership boundaries
 
@@ -40,7 +40,7 @@ Only the planning core and adapter interfaces exist today. Everything else in th
 - ProviderConnection: owner, provider, encrypted tokens, sync cursor.
 - OutboxEvent: owner, change set, operation ID, delivery status and retry metadata.
 
-Index plan items by owner/plan/start; enforce ownership and uniqueness in storage, not only application code. Row-level security can provide defense in depth. Production apply uses one database transaction with a revision check and unique idempotency key. The current in-memory Planner is deliberately single-process and is neither persistent nor thread-safe.
+PostgreSQL storage indexes items by owner/plan/start and enforces composite relationship keys. Each service operation locks the plan row before taking a snapshot; apply commits items, revision, audit history, a scoped retry receipt, and an outbox event atomically. Owner identity is still an explicit trusted parameter: there is no authentication or row-level security. The original in-memory Planner remains available and is deliberately single-process, nonpersistent, and not thread-safe. Production pooling, timeouts, account lifecycle, and backup/restore are still required.
 
 ## Time and scheduling semantics
 

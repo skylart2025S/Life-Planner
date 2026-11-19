@@ -32,7 +32,7 @@ Provisional choices: web-first product, Python planning core, later PostgreSQL s
 | LP-09 | Preferences | Meal/clothing recommendations respect explicitly provided preferences; missing allergy, weather, or wardrobe context is not fabricated. |
 | LP-10 | Recovery | Production includes persisted change history, undo proposals, and visible external synchronization failures. |
 
-Implemented now: the in-memory mechanics behind LP-03 through LP-06 and explicit owner checks on commands and `read_items(user_id)` for LP-07. Internal snapshot properties are trusted local access, not an authenticated API. This is not authentication. Recommendation generation, chat interpretation, recurring schedules, undo, external syncing, and UI are still backlog items.
+Implemented now: the in-memory mechanics behind LP-03 through LP-06, explicit owner checks on commands and `read_items(user_id)`, and PostgreSQL persistence with owner-scoped storage operations, durable retries, revision checks, audit history, and pending outbox records. Internal snapshot properties are trusted local access, not an authenticated API. Explicit owner parameters are not authentication or database row-level security. Recommendation generation, chat interpretation, recurring schedules, undo, external syncing, and UI are still backlog items.
 
 ## Scope boundaries
 
