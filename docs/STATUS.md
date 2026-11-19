@@ -31,3 +31,7 @@ Repository: https://github.com/skylart2025S/Life-Planner. The original remote wa
 Local foundation accepted by the independent reviewer at `a1a66ca`; review report committed as `a953408`. See [foundation report](reports/2026-11-19-foundation.md) and [independent review](reports/2026-11-19-independent-review.md).
 
 The initial GitHub push failed because the local Git credential prompt could not supply credentials. No successful remote publication, PR, or remote CI result was observed. Connect working GitHub authentication before retrying publishing; do not repeatedly retry unchanged credentials. Local LP-101 work can proceed on a task branch while the publication blocker is pending.
+
+## Publication retry — 2026-11-19
+
+At the user's request, retried `git push -u origin main`. GitHub explicitly rejected authentication as an invalid username or token and indicated account-password authentication is unsupported. No successful push was observed. No authenticated GitHub CLI, configured credential helper, environment token, or loaded SSH-agent identity was available as a fallback. Existing commits remain local. Restore repository-write authentication before the next push attempt.

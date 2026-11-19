@@ -33,3 +33,7 @@ The coordinator selects one bounded backlog slice per hourly run, assigns explic
 M0 local acceptance is complete; publication and remote checks remain pending. Restore GitHub authentication, push the reviewed bootstrap commits, and observe CI. Continue with a bounded LP-101 transactional-persistence slice locally if publication remains blocked; preserve its branch and report without claiming remote delivery. Avoid repeatedly retrying unchanged authentication failures.
 
 Next product milestone: M1 durable private plans (LP-101/102). The foundation has no persistent storage, authentication, HTTP API, UI, live model, calendar connection, recurrence, undo, or deployment. See TEAM_CHARTER.md for M0–M4 acceptance gates.
+
+## User-requested connection retry
+
+Retried publishing `main` on 2026-11-19. GitHub returned invalid username/token; the retry did not publish the branch. Read-only fallback checks found no available authenticated CLI/token/helper or loaded SSH identity. This updates the earlier credential-prompt failure: the current blocker is rejected HTTPS credentials. The team must obtain a working repository-write connection before claiming remote delivery.
