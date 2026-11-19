@@ -9,7 +9,7 @@ Updated: 2026-11-19.
 - Added a standard-library Python core for previewing and applying event/dependency moves, conflict and owner checks, stale revision rejection, and in-process retry safety.
 - Added a synthetic demo, behavior tests, local review-context generator, GitHub CI and contribution templates.
 - Planning engineer committed core and tests as `95b31c3`; independent reviewer reran all 27 tests and the demo successfully. GitHub foundation checks passed for `c9374d1`: [run](https://github.com/skylart2025S/Life-Planner/actions/runs/44560113578).
-- On branch `agent/LP-101-persistent-plans`: PostgreSQL storage, checked migrations, durable proposals/retry receipts, atomic audit/outbox recording, and real database tests. QA and the independent reviewer each passed all 46 tests with zero skips on PostgreSQL 16.15; final commit review and remote checks are pending.
+- On branch `agent/LP-101-persistent-plans`: PostgreSQL storage, checked migrations, durable proposals/retry receipts, atomic audit/outbox recording, and real database tests. QA and the independent reviewer each passed all 46 tests with zero skips on PostgreSQL 16.15. Independent review accepted implementation commit `d54f886`; [GitHub checks](https://github.com/skylart2025S/Life-Planner/actions/runs/44561884504) passed. [PR #1](https://github.com/skylart2025S/Life-Planner/pull/1) is awaiting authorized integration.
 
 ## Not implemented
 
@@ -21,7 +21,7 @@ The coordinator started engineering, team-operations, and independent-review age
 
 ## Next task
 
-Finish LP-101 independent review and publish its PR with observed remote CI. After authorized integration, select the authentication approach and implement LP-102. Choose the frontend approach before LP-103. Continue reviewing provisional choices against any original detailed specifications the user supplies.
+LP-101 is independently reviewed and published as PR #1 with passing GitHub checks. Await authorized integration; then select the authentication approach and implement LP-102. Choose the frontend approach before LP-103. Continue reviewing provisional choices against any original detailed specifications the user supplies.
 
 ## Handoff
 
@@ -32,3 +32,7 @@ Repository: https://github.com/skylart2025S/Life-Planner. The original remote wa
 The reviewed foundation was pushed successfully to `origin/main`. GitHub's commit API confirmed `c9374d1682c0f95ed94ef3b5c2e43ea0c83ec216`. The [Foundation checks run](https://github.com/skylart2025S/Life-Planner/actions/runs/44560113578) completed successfully, including planning behavior tests, the demo, and review-context generation.
 
 GitHub CLI authentication is now working; the earlier publication blocker is resolved. See [foundation report](reports/2026-11-19-foundation.md) and [independent review](reports/2026-11-19-independent-review.md). M0 is complete. Start LP-101 on a task branch, use independent review, and publish the branch/PR with observed test evidence. No automatic merge or deployment is authorized.
+
+## LP-101 delivery
+
+[PR #1](https://github.com/skylart2025S/Life-Planner/pull/1) contains durable PostgreSQL plans/proposals and 19 added integration tests. [Independent report](reports/2026-11-19-persistence-review.md) accepted `d54f886`; [delivery report](reports/2026-11-19-persistence.md) records local and remote evidence. The initial [branch CI run](https://github.com/skylart2025S/Life-Planner/actions/runs/44561884504) passed. No merge or deployment was performed.

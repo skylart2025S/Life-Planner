@@ -1,6 +1,6 @@
 # LP-101 persistence delivery — 2026-11-19
 
-Status: **implementation complete; final commit review and remote publication pending**.
+Status: **independently accepted and published in [PR #1](https://github.com/skylart2025S/Life-Planner/pull/1); GitHub checks passed; integration pending**.
 
 ## Task and ownership
 
@@ -23,7 +23,7 @@ The adapter reuses deterministic planning rules, validates stored proposals agai
 - QA and independent reviewer each ran `.venv/bin/python -m unittest discover -s tests -v` with `PLAN_TEST_DATABASE_URL` pointing to a disposable local database: **46 tests passed, zero skips** (27 existing domain tests + 19 database tests).
 - Coverage includes a fresh child process, owner/plan isolation, conflicting simultaneous writers, simultaneous retry requests, immutable history, repeated migrations, and a deliberately failed outbox insert that rolls back the whole apply.
 - Additional independent disposable-schema probes passed for partial creation rollback, before-image mismatch after preview, fixed-item revalidation, and migration checksum mismatch rejection.
-- GitHub workflow now installs the pinned dependencies and supplies PostgreSQL so integration tests run in CI. Remote execution has not yet been observed for this change.
+- GitHub workflow now installs the pinned dependencies and supplies PostgreSQL so integration tests run in CI. The [GitHub run](https://github.com/skylart2025S/Life-Planner/actions/runs/44561884504) completed successfully for implementation commit `d54f886`, including the real PostgreSQL test job.
 - Docker daemon access was unavailable locally. The coordinator extracted PostgreSQL binaries into `/tmp/life-planner-postgres` and ran an isolated localhost test database instead; no system database service was installed or changed.
 
 ## Remaining boundaries
@@ -32,4 +32,6 @@ This is persistence, not an authenticated product or deployed service. Caller id
 
 ## Handoff
 
-Obtain independent acceptance of the final commit, push the task branch, open its pull request, and observe remote checks. Do not merge or deploy automatically. After integration, LP-102 should derive owner identity from authentication and expose the validated API contract. M1 is not complete until LP-102 is also verified.
+The independent reviewer accepted implementation commit `d54f886944789042a6b37900778613e2f1d3558b` with no blocking findings: [review report](2026-11-19-persistence-review.md). The branch was pushed and [PR #1](https://github.com/skylart2025S/Life-Planner/pull/1) opened. GitHub checks passed. Await authorized integration; do not merge or deploy automatically. After integration, LP-102 should derive owner identity from authentication and expose the validated API contract. M1 is not complete until LP-102 is also verified.
+
+Coordinator also verified dependency consistency, the demo/context generator, documentation links, and Compose configuration. Docker Compose configuration was checked through standard input because the local Snap package cannot read the hidden workspace path. Runtime integration used the isolated PostgreSQL process described above.
