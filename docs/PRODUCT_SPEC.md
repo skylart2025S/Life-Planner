@@ -45,3 +45,7 @@ The first release should plan a week, interpret a narrow set of calendar command
 - Meal/wardrobe data sources and what users want to enter manually.
 - Product targets for latency, per-user AI cost, retention, and expected active users.
 - Semantics for recurrence, daylight saving changes, meal windows, and unschedulable requests.
+
+## Confirmed visual direction
+
+The user requested the warm neutral palette above, then a simpler interface inspired by Acloset because the initial dashboard looked too much like an AI-generated template. Use a practical calendar, selected-day content, restrained sans-serif type and functional controls. Avoid decorative hero slogans, sparkle imagery and summary cards without useful actions. Use [Acloset’s official calendar example](https://media.acloset.app/homepage/app/main/app_style_calendar_en_540x1119.webp) as a layout reference, while keeping original Life Planner branding and sample content. Do not import third-party photos or claim a connection to Acloset.

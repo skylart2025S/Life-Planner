@@ -2,7 +2,7 @@
 
 A chat-driven calendar that keeps routines, meals, and clothing plans aligned when life changes.
 
-This is an **early local prototype**, not a deployed application. It includes an interactive sample calendar, an authenticated planning API, PostgreSQL persistence, a deterministic planning core, and a coordinated development team workflow. The repository is https://github.com/skylart2025S/Life-Planner. No live AI provider, calendar account, or hosted production database is connected.
+This is an **early local prototype**, not a deployed application. It includes an interactive month calendar and daily agenda, an authenticated planning API, PostgreSQL persistence, a deterministic planning core, and a coordinated development team workflow. The repository is https://github.com/skylart2025S/Life-Planner. No live AI provider, calendar account, or hosted production database is connected.
 
 ## Try the visible prototype
 
@@ -12,7 +12,7 @@ From the repository root:
 python3 -m http.server 8765 --bind 127.0.0.1 --directory apps/web
 ```
 
-Open [Life Planner locally](http://127.0.0.1:8765). Try moving Wednesday gym to Thursday, preview all three linked changes, then confirm or cancel. The screen uses sample data and a predefined interaction; it does not yet call the authenticated API or live AI. Reloading resets its state. See [browser prototype](apps/web/README.md) and [API setup](apps/api/README.md).
+Open [Life Planner locally](http://127.0.0.1:8765). Select a day in November’s sample calendar to view its agenda. Open “Change a plan” to move Wednesday gym to Thursday, preview all three linked changes, then confirm or cancel. The screen uses sample data and a predefined interaction; it does not yet call the authenticated API or live AI. Reloading resets its state. See [browser prototype](apps/web/README.md) and [API setup](apps/api/README.md).
 
 ## Start here
 
@@ -42,7 +42,7 @@ For durable plans and the PostgreSQL integration tests, follow [persistence setu
 | `tests/` | Behavior tests for rescheduling, conflicts, ownership, and retries |
 | `agents/` | Role briefs and review/handoff templates for coding agents |
 | `docs/` | Requirements, architecture, API draft, roadmap, decisions, progress |
-| `apps/web/` | Interactive sample week, planning panel, linked-change preview and confirmation |
+| `apps/web/` | Interactive month calendar, daily agenda, linked-change preview and confirmation |
 | `apps/api/` | Authenticated typed planning API; trusted local public keys |
 | `workers/` | Future external-calendar synchronization boundary |
 | `scripts/review_context.py` | Local repository/spec context packet for a review agent |
