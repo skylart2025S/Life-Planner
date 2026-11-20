@@ -44,7 +44,7 @@ snapshot = store.read_plan("demo-user", "week-1")
 assert snapshot.revision == revision
 ```
 
-Run this example against a fresh plan ID; duplicate creation is rejected. The user ID must eventually come from the authenticated API. Passing an owner string is not sign-in or authorization against someone who has the database credentials.
+Run this example against a fresh plan ID; duplicate creation is rejected. This direct-library example uses a fixture owner; the HTTP API derives it from verified token identity. Passing an owner string is not sign-in or authorization against someone who has the database credentials.
 
 ## Transaction guarantees
 
@@ -54,7 +54,7 @@ Apply stores changed items, the incremented revision, immutable change history, 
 
 The idempotency key is scoped to **owner + plan + key**. Repeating the same proposal/key returns its original applied revision, including after reconnecting or later plan changes. Reusing that key for a different proposal is rejected. Reapplying an already applied proposal with a new key records a receipt for its original result without generating another revision, history record, or outbox event.
 
-Stored proposal JSON is revalidated against the current plan through the deterministic planner before mutation. Missing or inaccessible plan/proposal IDs raise `KeyError`; invalid confirmation, conflicting/stale proposals, and reused keys raise `ValueError`. A future authenticated API must map these into the public error contract.
+Stored proposal JSON is revalidated against the current plan through the deterministic planner before mutation. Missing or inaccessible plan/proposal IDs raise `KeyError`; invalid confirmation, conflicting/stale proposals, and reused keys raise `ValueError`. The authenticated API maps known domain failures into the public error contract; unknown or corrupt persisted state remains an internal error.
 
 ## Tables and migrations
 
@@ -72,8 +72,8 @@ Stored proposal JSON is revalidated against the current plan through the determi
 
 ## Current limits
 
-- Owner scoping and composite constraints protect service operations and relationships. There is no authenticated API or row-level security; the configured database role is trusted.
-- Reads take the same plan lock as writes. There is no connection pool, configured statement/lock timeout, or contention benchmark yet.
+- Owner scoping and composite constraints protect service operations and relationships. The API verifies signed access tokens and derives owner identity. There is no database row-level security; the configured database role is trusted.
+- Reads take the same plan lock as writes. The API adds bounded connection/statement/lock timeouts. Direct library clients configure their own. No connection pool or contention benchmark exists yet.
 - Outbox records do not send calendar updates; provider delivery is LP-108.
 - Proposal expiration, history retention/deletion, account lifecycle, undo, and production backup/restore remain future work. History mutation triggers intentionally reject ordinary update/delete operations.
 - Persistence preserves UTC instants; recurrence and stored IANA user timezone remain later work.
