@@ -4,7 +4,7 @@
 - Branch: `agent/LP-103-app-layout`.
 - Owner: app_layout agent, `apps/web/` only. Coordinator owns docs, integration and browser QA. Independent reviewer: api_ui_review, read-only implementation review and its own report.
 - User request: make the visible product more like Acloset and less like an AI-generated dashboard; retain the exact Warm Neutral Tones palette.
-- State: implemented; browser checks passed; independent final review and remote checks pending.
+- State: implemented and pushed in PR #3; browser and remote checks passed on the implementation head; independent review accepted the exact implementation head. Final report-head checks and merge verification remain the integration gate.
 - Authorization: commit/push/PR and merge after independent acceptance plus passing current-head checks. No deployment.
 
 ## Acceptance
@@ -32,3 +32,12 @@ Coordinator browser checks passed in the actual in-app browser:
 No browser/API connection or backend behavior was changed. Required remote CI is observed separately before merge. The previous API/preview delivery is merged; its exact review is preserved in `2026-11-19-api-preview-review.md` and its integration evidence in `2026-11-19-api-and-preview.md`.
 
 Next: connect the accepted visible journey to the durable API with loading/error handling and a selected authentication-provider flow. Do not claim M2 complete while the sample is disconnected from live planning.
+
+## Publication evidence
+
+- Implementation: `2642d71ed5a7656986fda66cf7e1f4e01a9127a3`, pushed to `agent/LP-103-app-layout`.
+- Pull request: [PR #3](https://github.com/skylart2025S/Life-Planner/pull/3).
+- Implementation-head checks observed successful: [pull request run](https://github.com/skylart2025S/Life-Planner/actions/runs/44666182046) and [branch run](https://github.com/skylart2025S/Life-Planner/actions/runs/44666143933). The pull request log reports 76 tests, OK, with PostgreSQL enabled.
+- On continuation, the local preview was restarted and verified HTTP 200 at `http://127.0.0.1:8765/`. This is a local preview, not a deployment.
+
+- Independent review accepted implementation `2642d71ed5a7656986fda66cf7e1f4e01a9127a3`; see [review report](2026-11-20-app-layout-review.md). The reviewer independently verified all 76 CI tests passed; the local database had stopped, so the local retry is not reported as a pass. The following commit contains reports/status only, with unchanged implementation.
