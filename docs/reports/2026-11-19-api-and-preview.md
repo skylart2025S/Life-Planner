@@ -32,3 +32,7 @@ A FastAPI resource server verifies real signed RS256 access tokens from configur
 Remote push, PR and observed check evidence are added after publication; local checks alone do not establish remote success. See the independent review report for final accepted revision. No deployment has been performed.
 
 Next: complete authorized integration, then connect the visible UI to durable authenticated plans with loading/errors and refresh-safe state. A live sign-in provider and compatible access-token policy remain product decisions before real accounts. Live AI, recurring routines, recommendations, calendar import/sync and undo remain backlog items. The hourly continuation remains active and should finish existing work before creating a new slice.
+
+## Integration verified — 2026-11-20 UTC
+
+[PR #2](https://github.com/skylart2025S/Life-Planner/pull/2) was merged after independent acceptance of `0b469062a08ae2bf502c7c84286f449a9b53b45a` and both observed remote checks passing. Integration commit: `2e27bd4d9382dca6c0c774a476a244311b01158f`, merged 2026-11-20T03:04:26Z. [Checks on merged main](https://github.com/skylart2025S/Life-Planner/actions/runs/44665192148) passed. [Independent review](2026-11-19-api-preview-review.md) records the accepted scope and resolved findings. No deployment.

@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-11-19.
+Updated: 2026-11-20.
 
 ## Delivered
 
@@ -10,7 +10,7 @@ Updated: 2026-11-19.
 
 ## Current delivery: API and visible preview
 
-Branch `agent/LP-102-authenticated-api`, based on merged LP-101.
+Integrated in [PR #2](https://github.com/skylart2025S/Life-Planner/pull/2) as `2e27bd4d9382dca6c0c774a476a244311b01158f`; [merged-main checks](https://github.com/skylart2025S/Life-Planner/actions/runs/44665192148) passed.
 
 - LP-102: typed authenticated API for create/read/preview/apply. RSA access tokens are verified against trusted local public keys; owner identity never comes from request bodies. Real database integration, strict confirmation, retry, input limits, timeout and isolation checks pass.
 - LP-103 first slice: interactive sample week with planning panel, linked gym/meal/clothing preview, confirm/cancel/reset and mobile layout. The user’s Warm Neutral Tones palette is applied: Azure Mist, Alabaster Grey, Almond Cream, Almond Silk and Camel, with readable soft brown text.
@@ -25,7 +25,7 @@ Hourly Codex continuation `ai-life-planner-development-team` is ACTIVE. It runs 
 
 ## Next task
 
-Finish this branch’s independent acceptance and observed GitHub checks, then merge under the standing authorization. After integration, continue LP-103: connect the visible journey to authenticated durable planning, including loading/errors and refresh-safe state. Choose the live sign-in provider before connecting real accounts; add narrowly evaluated chat interpretation as LP-104. Keep user-visible progress central to each slice.
+Current branch `agent/LP-103-app-layout` implements the user’s Acloset-inspired refinement: a compact month calendar and selected-day agenda, functional date/keyboard controls, fewer decorative/dashboard elements, and the requested warm palette. Desktop/mobile interaction checks and 76 remote regression tests passed on implementation `2642d71`; [PR #3](https://github.com/skylart2025S/Life-Planner/pull/3) is open. Independent review accepted that exact implementation; verify checks after the report-only commit before merging, then continue LP-103: connect the visible journey to authenticated durable planning, including loading/errors and refresh-safe state. Choose the live sign-in provider before connecting real accounts; add narrowly evaluated chat interpretation as LP-104. Keep user-visible progress central to each slice.
 
 ## Evidence
 
