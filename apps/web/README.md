@@ -20,6 +20,12 @@ This is a predefined local interaction, not an AI chat service or an authenticat
 
 The user's requested Acloset-inspired direction is interpreted as a sparse, practical calendar: compact toolbar, simple sans serif typography, selected-day circle, small category tiles and a readable agenda. The reference was the calendar screen shown on [Acloset's official website](https://www.acloset.app/). This is an original Life Planner interface; it uses no Acloset branding, imagery or code. The former marketing hero, decorative motifs, summary cards and large assistant panel are removed.
 
-The exact Warm Neutral Tones remain: Azure Mist `#ecf8f8`, Alabaster Grey `#eee4e1`, Almond Cream `#e7d8c9`, Almond Silk `#e6beae`, and Camel `#b2967d`. Dark brown supports readable text; category names and accessible date labels supplement color and icons. All text uses at least 14px, apart from no text-bearing icon graphics. The month fits narrow screens without a horizontally scrolling timeline; the agenda and change controls stack below it on phones.
+The exact Warm Neutral Tones remain: Azure Mist `#ecf8f8`, Alabaster Grey `#eee4e1`, Almond Cream `#e7d8c9`, Almond Silk `#e6beae`, and Camel `#b2967d`. Dark brown supports readable text; category names and accessible date labels supplement color and icons. Calendar text uses at least 14px; the wardrobe has smaller secondary labels. The month fits narrow screens without a horizontally scrolling timeline; the agenda and change controls stack below it on phones.
 
 Keyboard-operable dates and actions, explicit labels, visible focus states, a skip link, live status announcements and confirmation focus are included. Formal accessibility certification and connected product behavior remain future work.
+
+## Manual wardrobe and outfits
+
+Open `wardrobe.html` from the Calendar header. Add your own clothes and their availability, then select garments to preview and save a named outfit. This first slice saves only in this browser on this device; it does not provide account isolation, cloud backup, live AI suggestions, weather information, photo uploads or calendar assignments. Clearing browser data removes device records. Account migration must later require explicit destination-account confirmation.
+
+Wardrobe behavior tests run with `node --test tests/web/wardrobe.test.js` from the repository root and are included in GitHub CI alongside the full database suite. See `docs/DELIVERY_PLAN.md` for the unclosed account, AI and production release gates.

@@ -49,3 +49,7 @@ The first release should plan a week, interpret a narrow set of calendar command
 ## Confirmed visual direction
 
 The user requested the warm neutral palette above, then a simpler interface inspired by Acloset because the initial dashboard looked too much like an AI-generated template. Use a practical calendar, selected-day content, restrained sans-serif type and functional controls. Avoid decorative hero slogans, sparkle imagery and summary cards without useful actions. Use [Acloset’s official calendar example](https://media.acloset.app/homepage/app/main/app_style_calendar_en_540x1119.webp) as a layout reference, while keeping original Life Planner branding and sample content. Do not import third-party photos or claim a connection to Acloset.
+
+## Professional product completion
+
+The user reaffirmed on 2026-11-20 that the full goal includes real AI, outfits and scalability, and requested an agent planning meeting and delivery. The [delivery plan](DELIVERY_PLAN.md) translates this into explicit gates: owned wardrobe and saved plans, live AI clarification/proposals, grounded outfit/meal recommendations, routine/recovery/integration, and measured release readiness. The current sample does not meet those gates. Manual garment capture is a reversible starting choice; device-only persistence is an interim disclosed mode, never a substitute for private account-backed saving.
