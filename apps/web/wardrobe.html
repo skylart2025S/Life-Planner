@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#fffdfb"><title>Life Planner — Wardrobe</title>
+  <link rel="stylesheet" href="wardrobe.css?v=2">
+  <script src="wardrobe-domain.js?v=1" defer></script><script src="wardrobe.js?v=2" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#wardrobe">Skip to wardrobe</a>
+  <header><a class="brand" href="index.html">life planner</a><nav aria-label="Main"><a href="index.html">Calendar</a><a href="wardrobe.html" aria-current="page">Wardrobe</a></nav></header>
+  <main id="wardrobe">
+    <div class="page-heading"><div><p class="eyebrow">Your everyday collection</p><h1>Wardrobe</h1></div><span class="device-label">Saved on this device</span></div>
+    <p class="intro">Keep track of clothes you own and put together outfits for your day.</p>
+    <div id="feedback" role="status" aria-live="polite"></div>
+    <div id="error" role="alert" hidden></div>
+    <div class="workspace">
+      <section class="collection" aria-labelledby="collection-title">
+        <div class="section-heading"><h2 id="collection-title">Your clothes <span id="item-count"></span></h2><a href="#item-form">Add an item <span aria-hidden="true">＋</span></a></div>
+        <div id="garments" class="garment-grid"></div>
+        <form id="item-form" class="editor">
+          <div class="section-heading"><h2 id="item-form-title">Add an item</h2><button id="cancel-edit" type="button" hidden>Cancel edit</button></div>
+          <label for="item-name">Item name</label><input id="item-name" required maxlength="80" placeholder="E.g. Cream linen shirt" autocomplete="off">
+          <div class="field-pair"><div><label for="item-category">Category</label><select id="item-category"><option value="top">Top</option><option value="bottom">Bottom</option><option value="one-piece">One piece</option><option value="shoes">Shoes</option><option value="layer">Layer</option></select></div><div><label for="item-color">Color</label><input id="item-color" required maxlength="40" placeholder="E.g. Cream" autocomplete="off"></div></div>
+          <label for="item-occasion">Occasion</label><select id="item-occasion"><option value="any">Any occasion</option><option value="casual">Casual</option><option value="work">Work</option><option value="workout">Workout</option></select>
+          <label class="checkbox"><input type="checkbox" id="item-available" checked> Available to wear</label>
+          <p class="helper">Uncheck for laundry or items you cannot wear right now. Changing a category or availability removes outfits that can no longer be worn.</p>
+          <button id="save-item" class="primary" type="submit">Save item</button>
+        </form>
+      </section>
+      <aside>
+        <section class="outfit-builder" aria-labelledby="builder-title">
+          <p class="eyebrow">Put it together</p><h2 id="builder-title">Build an outfit</h2><p class="helper">Choose from your available clothes. Add a top and bottom, or one piece, then shoes.</p>
+          <form id="outfit-form">
+            <label for="outfit-name">Outfit name</label><input id="outfit-name" maxlength="80" required placeholder="E.g. Friday at work" autocomplete="off">
+            <label for="outfit-base">Start with</label><select id="outfit-base"><option value="separates">Top + bottom</option><option value="onePiece">One piece</option></select>
+            <div id="separates-fields"><label for="outfit-top">Top</label><select id="outfit-top"></select><label for="outfit-bottom">Bottom</label><select id="outfit-bottom"></select></div>
+            <div id="one-piece-fields" hidden><label for="outfit-onePiece">One piece</label><select id="outfit-onePiece"></select></div>
+            <label for="outfit-shoes">Shoes</label><select id="outfit-shoes"></select><label for="outfit-layer">Layer <span class="muted">(optional)</span></label><select id="outfit-layer"></select>
+            <button id="preview-outfit" class="primary" type="submit">Preview outfit</button>
+          </form>
+          <section id="outfit-preview" class="preview" hidden aria-labelledby="preview-title"><h3 id="preview-title"></h3><ul id="preview-items"></ul><p class="helper">Review your selections before saving.</p><button id="confirm-outfit" class="primary" type="button">Save this outfit</button><button id="cancel-preview" type="button">Keep editing</button></section>
+          <button id="new-outfit" type="button" hidden>Start a new outfit</button>
+        </section>
+        <section class="saved-outfits" aria-labelledby="saved-title"><div class="section-heading"><h2 id="saved-title">Saved outfits <span id="outfit-count"></span></h2></div><div id="outfits"></div></section>
+      </aside>
+    </div>
+    <footer><p>Manual wardrobe · no AI suggestions or calendar connection yet.</p><details><summary>About saving on this device</summary><p>Your clothes and outfits stay in this browser, on this device. They are not linked to an account, backed up or shared with AI. Clearing browser data removes them. Limit: 200 items and 100 outfits.</p><button id="reload" type="button">Reload saved items</button><button id="clear" class="danger" type="button">Clear this wardrobe</button></details></footer>
+  </main>
+  <dialog id="confirmation-dialog" aria-labelledby="confirmation-title" aria-describedby="confirmation-message">
+    <h2 id="confirmation-title">Confirm change</h2>
+    <p id="confirmation-message"></p>
+    <div class="confirmation-actions"><button id="confirmation-cancel" type="button" autofocus>Cancel</button><button id="confirmation-accept" class="primary" type="button">Confirm</button></div>
+  </dialog>
+</body>
+</html>
