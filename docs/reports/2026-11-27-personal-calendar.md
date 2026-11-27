@@ -24,3 +24,9 @@ Users can manage their own one-off plans. Proposals capture immutable snapshots 
 ## Publication and handoff
 
 Final commit binding, push/PR, remote checks and integration evidence pending at report creation. No deployment performed. Next task LP-103B: owned API-backed calendar journey and session recovery. Device calendar and wardrobe do not provide cloud accounts, live AI, linked outfit/meal moves, recurrence, undo or measured scale. Full completion remains governed by DELIVERY_PLAN.md.
+
+## Publication evidence
+
+Implementation commit: `6832583bfc4a28c32bb601cb2ce66611f2f715d1`. Published in [PR #5](https://github.com/skylart2025S/Life-Planner/pull/5). Both [push checks](https://github.com/skylart2025S/Life-Planner/actions/runs/45937728265) and [PR checks](https://github.com/skylart2025S/Life-Planner/actions/runs/45937749979) passed on this head. Coordinator inspected push logs: all76 Python tests pass against PostgreSQL, plus24 JavaScript tests, zero skips. Final report-only commit needs its own passing checks before merge. The user preview at localhost8765 is running with an empty personal calendar; QA used a separate origin.
+
+Independent reviewer api_ui_review accepted implementation `6832583bfc4a28c32bb601cb2ce66611f2f715d1` with no remaining blockers. The following commit changes only review/delivery/status/backlog records; implementation and tests are unchanged. Integration may proceed only after that head passes all checks, using the standing user authorization.
