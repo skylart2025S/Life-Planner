@@ -12,7 +12,9 @@ From the repository root:
 python3 -m http.server 8765 --bind 127.0.0.1 --directory apps/web
 ```
 
-Open [Life Planner locally](http://127.0.0.1:8765). Select a day in November’s sample calendar to view its agenda. Open “Change a plan” to move Wednesday gym to Thursday, preview all three linked changes, then confirm or cancel. The screen uses sample data and a predefined interaction; it does not yet call the authenticated API or live AI. Reloading resets its state. Open Wardrobe in the header to add your own clothes and build outfits saved on this device. Wardrobe data is separate from the resetting calendar sample; no account or live AI is connected. See [browser prototype](apps/web/README.md) and [API setup](apps/api/README.md).
+Open [Life Planner locally](http://127.0.0.1:8765). Select a day, add your own event, review its details and confirm to save it on this device. Edit or remove events through the daily agenda; changes always preview before saving. Month navigation and Today work with actual dates. Overlapping times and moves of fixed events are rejected. Open Wardrobe to record clothes and build outfits.
+
+Calendar and wardrobe records stay in this browser on this device. They are not backed up, synchronized to an account, or connected to the authenticated API or live AI. Clearing browser data removes them. See [browser prototype](apps/web/README.md) and [API setup](apps/api/README.md).
 
 ## Start here
 

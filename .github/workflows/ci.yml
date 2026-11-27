@@ -43,9 +43,10 @@ jobs:
       - name: Check browser JavaScript and wardrobe behavior
         run: |
           node --check apps/web/app.js
+          node --check apps/web/calendar-domain.js
           node --check apps/web/wardrobe.js
           node --check apps/web/wardrobe-domain.js
-          node --test tests/web/wardrobe.test.js
+          node --test tests/web/*.test.js
       - name: Run synthetic planning demo
         run: python -m life_planner.demo
       - name: Build local review context

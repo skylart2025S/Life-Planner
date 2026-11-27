@@ -22,7 +22,7 @@ Ownership: wardrobe_builder owns new apps/web/wardrobe* files and tests/web/ward
 
 ## Next sequence and contracts
 
-1. LP-107A manual capture/outfit builder; then LP-103B account-backed calendar journey, loading/errors and refresh-safe state; LP-107B owns wardrobe persistence and its connected UI. Sign-in registration is a dependency of live account activation, not of every implementation task.
+1. LP-107A manual capture/outfit builder is integrated. User-requested practical functionality adds LP-103A personal device calendar with preview/confirmation; it does not close account-backed gates. Then LP-103B account-backed calendar journey, loading/errors and refresh-safe state; LP-107B owns wardrobe persistence and its connected UI. Sign-in registration is a dependency of live account activation, not of every implementation task.
 2. LP-104A typed intent service, provider boundary, synthetic fixtures and evaluation runner; LP-104B configured live provider, measured quality/cost, clarification UI and confirmation journey. Do not let a test interpreter appear as live AI.
 3. LP-107B persisted preferences and event/outfit association; LP-107C constrained recommendation candidate selection plus model ranking and grounded meal recommendations. Validate ownership, IDs and current availability after model output; model prose never writes a plan.
 4. LP-106/109 recurrence and undo/history; LP-105/108 authorized provider import/sync; LP-110 measured release gates. Include release testing during feature development, not only at the end.

@@ -1,20 +1,14 @@
 # Life Planner browser prototype
 
-A zero-build, sample-only month calendar and selected-day agenda. The November 2026 calendar starts on Sunday, November 1. Sample plans occupy November 23–29. Click any date to inspect its plans; arrow keys move a focused date by a day or week. “Sample week” returns to the Wednesday sample (or Thursday during/after a proposed move).
+A zero-build personal calendar and manual wardrobe. Serve the repository's apps/web directory on localhost using the command in the main README. No package installation or API key is needed.
 
-Serve from the repository root:
+## Calendar
 
-```sh
-python3 -m http.server 8765 --bind 127.0.0.1 --directory apps/web
-```
+Starts empty on the current month. Select a day, choose Add event, enter a title/category/start/end and review the proposed event. Confirm saves on this browser/device. The agenda supports edits and removal; all changes require preview and explicit confirmation. Cancel never writes. Month navigation, Today and keyboard date selection use real dates.
 
-Open http://127.0.0.1:8765. No package installation, external fonts, images, or API keys are needed.
+Times use the browser's displayed timezone and are stored as UTC instants. Invalid local times and ambiguous daylight-saving times are rejected rather than silently shifted. Events cannot overlap; adjacent times are allowed. A fixed event must first be explicitly unlocked at its existing time before moving or removing it. There is no recurrence or automatic movement of linked meal/outfit preparation in this local slice.
 
-## Supported interaction
-
-Choose “Wednesday gym → Thursday” or type “Move Wednesday gym to Thursday.” The calendar selects Thursday and shows the proposed meal, clothing preparation and gym session alongside its existing study session. The review lists all three before/after dates and unchanged times. Wednesday still shows the original plans as pending until confirmation. Confirm applies all three local changes; cancel returns to Wednesday without changes. Reset and reload restore the fixture. Unsupported dates, times and other requests receive a clear explanation and cannot change plans.
-
-This is a predefined local interaction, not an AI chat service or an authenticated calendar. State lives only in browser memory. No API calls, browser storage, account or provider integration occur. The Python planning core remains the shared rule authority for future integration; this UI does not claim to call it. Times are sample local wall times, not timezone conversions.
+Saved records survive refresh. Writes use Web Locks and optimistic revision/token checks; another tab changing the calendar disables stale changes until explicit reload. Corrupt/unavailable storage is surfaced and never silently replaced. Device storage is not an authenticated account, cloud sync or backup. The UI does not call the API or a language model. No sample requests are presented as AI.
 
 ## Design
 
@@ -26,6 +20,8 @@ Keyboard-operable dates and actions, explicit labels, visible focus states, a sk
 
 ## Manual wardrobe and outfits
 
-Open `wardrobe.html` from the Calendar header. Add your own clothes and their availability, then select garments to preview and save a named outfit. This first slice saves only in this browser on this device; it does not provide account isolation, cloud backup, live AI suggestions, weather information, photo uploads or calendar assignments. Clearing browser data removes device records. Account migration must later require explicit destination-account confirmation.
+Open Wardrobe from the header. Add clothes and availability, then preview and save a named outfit from available items. Wardrobe and calendar use separate storage keys. No account isolation, cloud backup, AI suggestions, weather, photos or event outfit assignments are provided. Future migration must require explicit destination-account confirmation.
 
-Wardrobe behavior tests run with `node --test tests/web/wardrobe.test.js` from the repository root and are included in GitHub CI alongside the full database suite. See `docs/DELIVERY_PLAN.md` for the unclosed account, AI and production release gates.
+## Validation
+
+Run `node --test tests/web/*.test.js`. These behavior tests run in CI alongside the full Python/PostgreSQL suite. Browser accessibility and responsive checks are documented in dated reports; automated domain tests are not a full browser audit. See docs/DELIVERY_PLAN.md for unclosed account, AI and release gates.
