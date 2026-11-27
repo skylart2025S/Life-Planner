@@ -2,38 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#fffdfb">
-  <title>Life Planner — Calendar</title>
-  <link rel="stylesheet" href="styles.css?v=month-1">
-  <script src="app.js?v=month-1" defer></script>
+  <meta name="theme-color" content="#fffdfb"><title>Life Planner — Calendar</title>
+  <link rel="stylesheet" href="styles.css?v=month-1"><link rel="stylesheet" href="calendar.css?v=saved-1">
+  <script src="calendar-domain.js?v=saved-1" defer></script><script src="app.js?v=saved-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#week">Skip to calendar</a>
   <header class="app-header">
     <a class="brand" href="#week" aria-label="Life Planner calendar"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="4"/><path d="M8 3v4m8-4v4M4 11h16m-11 5h3"/></svg>life planner</a>
-    <div class="header-actions"><a class="wardrobe-link" href="wardrobe.html">Wardrobe</a><a href="#about">Sample planner</a><button id="reset" class="text-button" type="button">Reset</button></div>
+    <div class="header-actions"><a class="wardrobe-link" href="wardrobe.html">Wardrobe</a><a href="#about">About saving</a></div>
   </header>
   <main>
-    <div class="page-label"><h1>Calendar</h1><a href="#assistant" class="change-link">Change a plan <span aria-hidden="true">↗</span></a></div>
+    <div class="page-label"><div><h1>Calendar</h1><p class="device-label">Saved on this device</p></div><button id="add-plan" class="change-link" type="button">Add a plan <span aria-hidden="true">＋</span></button></div>
+    <div id="calendar-error" class="calendar-error" role="alert" hidden></div>
+    <p id="calendar-status" role="status" aria-live="polite"></p>
     <div class="planner-layout">
       <section class="calendar" id="week" aria-labelledby="week-title" tabindex="-1">
-        <div class="calendar-toolbar"><span class="view-label">Month</span><h2 id="week-title">November <span>2026</span></h2><button class="text-button sample-week" id="sample-week" type="button">Sample week</button></div>
+        <div class="calendar-toolbar"><button id="previous-month" class="month-arrow" type="button" aria-label="Previous month">‹</button><h2 id="week-title"></h2><button id="next-month" class="month-arrow" type="button" aria-label="Next month">›</button><button id="today" class="text-button" type="button">Today</button></div>
         <div class="weekday-labels" aria-hidden="true"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
-        <div id="days-grid" class="month-grid" aria-label="November 2026 dates"></div>
-        <div class="calendar-key" aria-label="Plan categories"><span><i class="workout"></i>Gym</span><span><i class="study"></i>Focus</span><span><i class="meal"></i>Meals</span><span><i class="clothing"></i>Clothing</span><span><i class="personal"></i>Personal</span></div>
-        <p class="calendar-caption">Sample plans: November 23–29 · local wall times</p>
+        <div id="days-grid" class="month-grid" aria-label="Calendar dates"></div>
+        <div class="calendar-key" aria-label="Plan categories"><span><i class="workout"></i>Workout</span><span><i class="study"></i>Focus</span><span><i class="meal"></i>Meals</span><span><i class="clothing"></i>Clothing</span><span><i class="personal"></i>Personal</span></div>
+        <p class="calendar-caption" id="timezone-label"></p>
+        <p class="calendar-caption">Use arrow keys to choose a day; Page Up or Page Down to change month.</p>
       </section>
       <div class="day-panel">
-        <section class="agenda" aria-labelledby="day-title"><div class="agenda-heading"><div><p class="section-label">Your day</p><h2 id="day-title">Wednesday, Nov 25</h2></div><span id="day-count" class="day-count"></span></div><p id="agenda-note" class="agenda-note" hidden></p><div id="agenda-list"></div></section>
-        <section id="assistant" class="change-panel" aria-labelledby="assistant-title"><h2 id="assistant-title">Change a plan</h2><p class="helper">Move your gym session and its linked meal and clothing prep together.</p>
-          <button id="quick-move" class="quick-action" type="button"><span>Wednesday gym <span class="move-arrow" aria-hidden="true">→</span> Thursday</span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>
-          <form id="chat-form" class="chat-form"><label for="message-input">Or type the sample request</label><div class="input-wrap"><input id="message-input" name="message" maxlength="240" autocomplete="off" placeholder="Move gym to Thursday"><button type="submit" aria-label="Send planning request"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></button></div></form>
-          <div id="conversation" aria-live="polite" aria-atomic="false"></div>
-          <section id="proposal" class="proposal-card" hidden aria-labelledby="proposal-title"><p class="section-label">Review before changing</p><h3 id="proposal-title">Move 3 plans to Thursday</h3><ul id="change-list"></ul><p class="proposal-note">Same times. Other plans stay where they are.</p><button id="confirm" class="primary-button" type="button">Confirm 3 changes</button><button id="cancel" class="cancel-button" type="button">Keep Wednesday plans</button></section>
+        <section class="agenda" aria-labelledby="day-title"><div class="agenda-heading"><div><p class="section-label">Your day</p><h2 id="day-title"></h2></div><span id="day-count" class="day-count"></span></div><div id="agenda-list"></div></section>
+        <section class="change-panel" id="plan-editor" aria-labelledby="editor-title">
+          <h2 id="editor-title">Add a plan</h2><p class="helper">Choose a time. Review your change before saving.</p>
+          <form id="plan-form">
+            <label for="plan-title">Plan name</label><input id="plan-title" name="title" maxlength="120" required autocomplete="off" placeholder="e.g. Evening gym">
+            <label for="plan-kind">Category</label><select id="plan-kind" name="kind"><option value="personal">Personal</option><option value="workout">Workout</option><option value="study">Focus</option><option value="meal">Meal</option><option value="clothing">Clothing</option></select>
+            <label for="plan-start">Starts</label><input id="plan-start" name="start" type="datetime-local" min="2000-01-01T00:00" max="2100-12-31T23:59" required>
+            <label for="plan-end">Ends</label><input id="plan-end" name="end" type="datetime-local" min="2000-01-01T00:00" max="2100-12-31T23:59" required>
+            <label class="fixed-control" for="plan-fixed"><input id="plan-fixed" name="fixed" type="checkbox">Keep this time fixed</label>
+            <p id="fixed-help" class="helper">Fixed plans must be unlocked and saved before moving or deleting them.</p>
+            <button id="preview-plan" class="primary-button" type="submit">Review new plan</button><button id="cancel-edit" class="cancel-button" type="button" hidden>Cancel editing</button>
+          </form>
         </section>
+        <section id="assistant" class="assistant-note" aria-labelledby="assistant-title"><h2 id="assistant-title">Planning assistant</h2><p>AI is not connected yet. You can add, edit and move plans using the form. Meal, clothing and workout plans are separate; changing one does not move the others.</p></section>
       </div>
     </div>
-    <footer id="about"><p id="calendar-status" role="status">Sample schedule · nothing saved</p><details><summary>About this sample</summary><p>This is a local preview with sample plans and one predefined Wednesday-to-Thursday move. No live AI, account, or calendar is connected. Changes stay in this page and reset on reload.</p></details></footer>
+    <footer id="about"><p id="event-count"></p><details><summary>About saving on this device</summary><p>Plans are saved only in this browser, on this device. They are not backed up or synced to an account, your wardrobe, or an external calendar. Clearing site data removes them. Each plan reserves its time; overlapping plans are rejected. Dates use your browser’s timezone. Ambiguous or missing daylight-saving times must be changed before saving.</p><button id="reload-plans" class="text-button" type="button">Reload saved plans</button><p>Reloading discards unsaved form changes after confirmation.</p></details></footer>
   </main>
+  <dialog id="review-dialog" aria-labelledby="review-title" aria-describedby="review-note">
+    <h2 id="review-title">Review your change</h2><p id="review-note">Nothing changes until you confirm.</p><div id="review-diff"></div><p id="review-error" role="alert" hidden></p><div class="review-actions"><button id="review-cancel" type="button" class="cancel-button">Cancel</button><button id="review-confirm" type="button" class="primary-button">Confirm and save</button></div>
+  </dialog>
 </body>
 </html>

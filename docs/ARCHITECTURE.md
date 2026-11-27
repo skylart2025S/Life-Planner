@@ -60,3 +60,7 @@ Production stores an IANA timezone alongside UTC instants and resolves local tim
 ## AI evaluation and privacy
 
 Maintain synthetic fixtures covering ambiguous dates, multiple matching events, unavailable times, DST transitions, invalid tool output, prompt injection in event titles, and preference constraints. Version prompts alongside code. A new model/prompt must pass command-extraction and clarification evaluations before rollout. Log request IDs and aggregate metrics rather than raw calendar/chat contents. Define retention/deletion and token encryption before enabling external accounts.
+
+## Interim browser calendar boundary
+
+LP-103A uses a separate versioned localStorage calendar key, bounded to 500 events and 500000 serialized characters. Immutable proposals carry the base snapshot and revision; apply recomputes validation. Web Locks serialize cooperating tabs, while raw storage tokens detect stale writes. Invalid or oversized saved data is preserved and surfaced as an error. UTC instants are displayed in the browser timezone; ambiguous/nonexistent local input is rejected. This is device persistence, not authenticated isolation or a substitute for the API. Account migration must be explicit and owner-scoped in LP-103B.

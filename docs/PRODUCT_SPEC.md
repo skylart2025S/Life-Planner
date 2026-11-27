@@ -53,3 +53,7 @@ The user requested the warm neutral palette above, then a simpler interface insp
 ## Professional product completion
 
 The user reaffirmed on 2026-11-20 that the full goal includes real AI, outfits and scalability, and requested an agent planning meeting and delivery. The [delivery plan](DELIVERY_PLAN.md) translates this into explicit gates: owned wardrobe and saved plans, live AI clarification/proposals, grounded outfit/meal recommendations, routine/recovery/integration, and measured release readiness. The current sample does not meet those gates. Manual garment capture is a reversible starting choice; device-only persistence is an interim disclosed mode, never a substitute for private account-backed saving.
+
+## Personal calendar interim delivery (LP-103A)
+
+The fixed calendar sample is replaced by an empty device calendar with actual dates, user-entered one-off plans, before/after preview, explicit create/edit/move/delete confirmation, overlap prevention and fixed-time safeguards. Data persists only in this browser profile; there is no cloud backup, authenticated calendar connection or live AI interpretation. The manual wardrobe remains separate from events. LP-103B and the professional release gates remain open.

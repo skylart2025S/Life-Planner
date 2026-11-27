@@ -1,40 +1,24 @@
 # Current status
 
-Updated: 2026-11-25.
+Updated: 2026-11-27 UTC.
 
 ## Delivered
 
-- Reviewed foundation: deterministic scheduling, specs, agent role briefs, reports and GitHub checks.
-- LP-101 is merged through [PR #1](https://github.com/skylart2025S/Life-Planner/pull/1) as `46d840d0568082523a5d76585f1ea3a57625c561`. PostgreSQL persists plans, proposals, retry receipts, audit history and pending outbox records atomically. All 46 tests passed locally against PostgreSQL 16.15; independent review accepted the implementation.
-- [Checks on merged main](https://github.com/skylart2025S/Life-Planner/actions/runs/44562598571) passed. GitHub authentication and branch pushes work.
+- Foundation and deterministic planning core, PostgreSQL persistence (PR #1), authenticated API (PR #2), and the original sample calendar (PR #3) are integrated.
+- Manual wardrobe and outfit builder is integrated through [PR #4](https://github.com/skylart2025S/Life-Planner/pull/4), merge `149990205eb79088663e7b170afcffdf9f861b41`. [Merged-main checks](https://github.com/skylart2025S/Life-Planner/actions/runs/45691588538) passed: 76 backend and 10 wardrobe tests, no skips.
 
-## Current delivery: API and visible preview
+## Current delivery: personal calendar, LP-103A
 
-Integrated in [PR #2](https://github.com/skylart2025S/Life-Planner/pull/2) as `2e27bd4d9382dca6c0c774a476a244311b01158f`; [merged-main checks](https://github.com/skylart2025S/Life-Planner/actions/runs/44665192148) passed.
+The calendar now starts empty and lets the user add, edit, move and remove their own plans through explicit previews and confirmations. It prevents overlaps, protects fixed times, saves across refreshes, and detects stale tabs. Calendar and wardrobe saving are on this browser/device only. The frontend does not call the authenticated API or a live AI provider.
 
-- LP-102: typed authenticated API for create/read/preview/apply. RSA access tokens are verified against trusted local public keys; owner identity never comes from request bodies. Real database integration, strict confirmation, retry, input limits, timeout and isolation checks pass.
-- LP-103 first slice: interactive sample week with planning panel, linked gym/meal/clothing preview, confirm/cancel/reset and mobile layout. The user’s Warm Neutral Tones palette is applied: Azure Mist, Alabaster Grey, Almond Cream, Almond Silk and Camel, with readable soft brown text.
-- Local verification: **76 Python tests passed, zero skipped**, with PostgreSQL 16.15. Desktop/mobile browser checks passed; screenshots were visually inspected. Independent review found two input defects, now fixed and rechecked. See the current delivery/review reports for exact commits and publication evidence.
-- Open the local screen using the command in README. It has been shown in the task browser at `http://127.0.0.1:8765/`; the local server is a preview process, not a deployment.
+Two specialist implementers delivered separate domain/test and UI files. Independent review found an oversized-storage write defect; it was fixed and the preservation regression passes. Root validation: 24 JavaScript tests pass, including DST cases; 76 Python tests discovered with 39 passing and 37 skipped because local PostgreSQL is not configured. Browser checks cover create/save/refresh, move/preview/cancel, conflict rejection, fixed-time save/unlock, deletion preview/cancel, stale-tab reload, keyboard navigation and 390px/320px layouts. Actual deletion is covered by domain tests, not a completed browser deletion. Implementation commit `6832583bfc4a28c32bb601cb2ce66611f2f715d1` is published in [PR #5](https://github.com/skylart2025S/Life-Planner/pull/5). Push and PR checks passed on that implementation; inspected logs confirm all76 Python and24 JavaScript tests pass without skips. Independent reviewer accepted the exact implementation commit with no remaining blockers; see the bound review report. Checks on the final report-only head and authorized integration remain pending.
 
-The UI uses a narrowly supported sample request and does not yet call the API or a language model. No live login provider, AI provider, calendar account, recurrence, external sync, undo, hosted database or deployment exists. A visual preview is a development milestone, not a completed product.
+See [delivery report](reports/2026-11-27-personal-calendar.md) and [independent review](reports/2026-11-26-personal-calendar-review.md).
+
+## Next bounded task and remaining gates
+
+LP-103B connects the calendar to owned API-backed plans, session handling and recovery. Live identity configuration remains required for end-to-end account acceptance. Then LP-104A provides typed AI intent validation and evaluations, followed by configured live AI and grounded outfit/meal recommendations. Recurrence, undo, external calendars, backup recovery, accessibility review and measured load/cost gates remain open. No production readiness or completed-product claim is made.
 
 ## Team and authority
 
-Hourly Codex continuation `ai-life-planner-development-team` is ACTIVE. It runs bounded implementation/review/report cycles. On 2026-11-19 the user authorized merging independently reviewed PRs once all automated checks pass. Deployments remain unauthorized. Repository permission changes and paid services are not covered. Agent execution occurs in Codex; it is separate from the product’s eventual AI features.
-
-## Next task
-
-PR #3 is integrated as `f2f1599128b73027024a0d8982de6fd81edd3ce5`; [merged-main checks](https://github.com/skylart2025S/Life-Planner/actions/runs/44774575737) passed after independent acceptance and passing final-head checks. The month/day sample is complete as a prototype slice.
-
-The 2026-11-20 agent meeting established the [complete journey delivery plan](DELIVERY_PLAN.md). LP-107A now implements manual wardrobe capture and outfit building on `agent/LP-107-wardrobe-foundation`; first-slice saving is explicitly on this device, not authenticated cloud storage. Account-backed persistence, real AI, grounded recommendations, recurrence, recovery and measured release gates remain incomplete. Sign-in/model configuration blocks live activation, not independent development. Keep user-visible progress central to each slice.
-
-## Evidence
-
-See [persistence delivery](reports/2026-11-19-persistence.md) and [independent review](reports/2026-11-19-persistence-review.md). Historical reports describe authority at their recording time; the standing merge policy above supersedes their earlier no-merge status. Repository branch-protection settings have not been changed. Parent mirror `sources/` files remain untouched.
-
-## November 25 progress meeting
-
-GitHub still had only merged PRs #1–#3 at the start of this meeting; the wardrobe work remained uncommitted after the implementation agent hit a usage limit. The hourly schedule is configured ACTIVE, but no intervening successful delivery is evidenced. Product and AI agents independently confirmed the remaining gaps. The reviewer ran all 10 wardrobe domain/storage tests successfully. Coordinator browser checks confirmed add/refresh and explicit outfit preview/save/reopen; a native confirmation popup stalled the in-app browser and was replaced with an accessible in-page dialog. Cancel, Escape, focus restoration and explicit stale-tab reload passed browser checks; 390px and 320px layouts had no horizontal overflow. No live AI, cloud wardrobe or scalability measurement is claimed. See the current delivery report for final disposition.
-
-LP-107A is independently accepted at `0f0286e31878f4f510a50115870ff8e05e410160` and published in [PR #4](https://github.com/skylart2025S/Life-Planner/pull/4). Current local checks: 10 wardrobe tests pass; Python discovers 76 tests with 39 passing and 37 skipped because no local PostgreSQL test service is configured. Remote push and PR checks passed; logs confirm all 76 Python and 10 wardrobe tests without skips. The final report-only head still requires its own passing checks before authorized integration. Next implementation: LP-103B, connect the calendar to owned saved plans; live account acceptance remains dependent on identity configuration.
+Hourly continuation `ai-life-planner-development-team` is configured ACTIVE; configuration does not prove execution. The user authorizes commits, pushes and merges after independent review and passing checks on the current head. Deployments and purchases remain unauthorized. Agent execution is separate from product AI. Parent `sources/` files are untouched. Historical delivery and review reports retain earlier evidence.
