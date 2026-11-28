@@ -1,12 +1,13 @@
 # Planning API — LP-102 contract
 
-The FastAPI service uses the durable PostgreSQL planner. It verifies signed access tokens using a server-configured local public-key set. No live login provider is connected. The browser sample is currently separate from this service.
+The FastAPI service uses the durable PostgreSQL planner. It verifies signed access tokens using a server-configured local public-key set. No live login provider is connected. The device calendar is currently separate from this service.
 
 ## Implemented routes
 
 | Route | Input | Success |
 | --- | --- | --- |
 | `GET /health` | No authentication | `200 {"status":"ok"}`; process liveness only |
+| `GET /v1/plans?limit=20&after=...` | Optional canonical page size 1–100 and exclusive plan-ID cursor; no duplicate/unknown fields | `200 {plans:[{plan_id,revision}],next_after}` |
 | `POST /v1/plans/{plan_id}` | `{ "items": [...] }` | `201 {plan_id, revision, items}`; create only, Location header |
 | `GET /v1/plans/{plan_id}?from=...&to=...` | Aware interval, positive and at most 31 days | `200 {plan_id, revision, items}` |
 | `POST /v1/plans/{plan_id}/proposals` | `{ "type":"move_item", "item_id":"gym", "new_start":"2026-11-26T18:00:00-05:00" }` | `201 {plan_id, proposal_id, base_revision, changes, explanation}` |
@@ -48,3 +49,7 @@ Error envelope: `{ "error": { "code": "...", "message": "...", "request_id": "..
 After an uncertain apply response, retry with the original idempotency key. Do not assume a timeout means the transaction did not commit. The adapter maps only known domain errors; unknown failures remain internal errors.
 
 Interactive OpenAPI documentation is served at `/docs` when the API is running. Chat interpretation, undo/history routes, live login, recurrence, external synchronization and deployment are outside LP-102.
+
+## Saved-plan discovery (LP-103B1)
+
+Discovery queries only authenticated-owner metadata with database keyset pagination: owner filter, optional `plan_id > after`, `ORDER BY plan_id`, and `LIMIT limit + 1`. There is no global total, cursor ownership lookup, item loading or per-plan row lock. Existing owner/plan primary-key ordering supports the query; no schema migration is introduced. `next_after` is the final returned plan ID only when another matching row exists; otherwise null. Each page is a new read, so concurrent inserts before the cursor require restarting discovery. Plan revisions must be revalidated before changes. This supports future account reopening but does not implement login, browser session recovery or cloud calendar CRUD.

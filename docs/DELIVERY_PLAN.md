@@ -14,7 +14,7 @@ A person can enter their own routines, preferences and wardrobe, ask for a sched
 | D — routine and recovery | Recurrence, undo/history, account export/deletion, recovery and calendar import/sync with an authorized provider | DST/exception tests, undo conflicts, deletion/retention design and tests, restore drill, revoked-token and idempotent synchronization/reconciliation tests. Import precedes external writes. An unconfigured provider leaves this gate pending unless the user explicitly approves release scope excluding external integration. |
 | E — professional release | Accessible responsive journey, secure account lifecycle, operations runbook and measured capacity/cost | Browser journey checks, accessibility review, isolation review, load/contention evidence, AI cost/latency measurements, backup restoration, monitoring and readiness checks. Separate user authorization remains necessary for deployment. |
 
-## Immediate assignment: LP-107A
+## Delivered first wardrobe slice: LP-107A
 
 Manual wardrobe capture and outfit building is independent of model credentials. First deliver a usable browser screen with bounded, versioned device storage: add/edit/delete clothes, record availability, select a valid outfit, preview and explicitly save, reopen and remove outfits. Start empty rather than inventing user possessions. Explain device-only saving and the absence of calendar association/live AI. Handle invalid/corrupt/unavailable storage, stale tabs and missing/deleted/unavailable garment references visibly. This is a limited first implementation slice, not the final persistence architecture.
 
@@ -23,7 +23,7 @@ Ownership: wardrobe_builder owns new apps/web/wardrobe* files and tests/web/ward
 ## Next sequence and contracts
 
 1. LP-107A manual capture/outfit builder is integrated. User-requested practical functionality adds LP-103A personal device calendar with preview/confirmation; it does not close account-backed gates. Then LP-103B account-backed calendar journey, loading/errors and refresh-safe state; LP-107B owns wardrobe persistence and its connected UI. Sign-in registration is a dependency of live account activation, not of every implementation task.
-2. LP-104A typed intent service, provider boundary, synthetic fixtures and evaluation runner; LP-104B configured live provider, measured quality/cost, clarification UI and confirmation journey. Do not let a test interpreter appear as live AI.
+2. Per the November 27 priority adjustment, LP-104A starts alongside owned-plan discovery: typed intent service, provider boundary, synthetic fixtures and evaluation runner; LP-104B configured live provider, measured quality/cost, clarification UI and confirmation journey. Do not let a test interpreter appear as live AI.
 3. LP-107B persisted preferences and event/outfit association; LP-107C constrained recommendation candidate selection plus model ranking and grounded meal recommendations. Validate ownership, IDs and current availability after model output; model prose never writes a plan.
 4. LP-106/109 recurrence and undo/history; LP-105/108 authorized provider import/sync; LP-110 measured release gates. Include release testing during feature development, not only at the end.
 
@@ -47,3 +47,7 @@ Proposed initial benchmark targets below are engineering hypotheses, not measure
 Pending: sign-in method/provider configuration, live model credentials and spending limit, external-calendar provider, hosting/operational budget, privacy/retention policy and approved capacity targets. Do not request secrets in chat. Make reversible implementation decisions locally, record assumptions, and raise only decisions that block the next dependent step.
 
 The existing hourly task ai-life-planner-development-team was updated, not duplicated. Each run starts with a short coordination review and delivers one bounded reviewed slice. Scheduled status does not guarantee a run has executed or remove access/usage limits. Notify on delivery, significant failure or required user input, not unchanged polling. Stop expanding scope at the documented release gate and ask for the next milestone. No deployment or purchase is authorized.
+
+## November 27 priority adjustment
+
+The user asked to start AI development now and selected “No preference—build the integration first.” Complete the already-started LP-103B1 owned-plan discovery prerequisite while beginning LP-104A1 provider-neutral interpretation with separate ownership. Live identity work does not block this boundary. Test providers prove contract behavior, not actual language understanding. A real adapter, configured credentials and spending limit, held-out quality/cost evaluations, clarification UI and atomic revision-bound proposal creation remain required before connected AI acceptance.

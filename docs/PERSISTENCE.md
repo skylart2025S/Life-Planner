@@ -48,7 +48,7 @@ Run this example against a fresh plan ID; duplicate creation is rejected. This d
 
 ## Transaction guarantees
 
-Every read, proposal, and apply locks the plan row before reading its revision/items. This serializes operations for one plan while other plans can progress independently. Competing proposals created from one revision cannot both apply: the first commit advances the revision, and the other fails as stale. PostgreSQL holds the row lock through transaction completion. [PostgreSQL locking documentation](https://www.postgresql.org/docs/16/explicit-locking.html).
+Every full-plan snapshot read, proposal, and apply locks the plan row before reading its revision/items. This serializes operations for one plan while other plans can progress independently. Competing proposals created from one revision cannot both apply: the first commit advances the revision, and the other fails as stale. PostgreSQL holds the row lock through transaction completion. [PostgreSQL locking documentation](https://www.postgresql.org/docs/16/explicit-locking.html).
 
 Apply stores changed items, the incremented revision, immutable change history, the retry receipt, and one pending outbox event in the same transaction. A failure in any step rolls all of them back. Psycopg connection contexts commit on normal exit and roll back on exceptions. [Psycopg transaction documentation](https://www.psycopg.org/psycopg3/docs/basic/transactions.html).
 
@@ -73,7 +73,11 @@ Stored proposal JSON is revalidated against the current plan through the determi
 ## Current limits
 
 - Owner scoping and composite constraints protect service operations and relationships. The API verifies signed access tokens and derives owner identity. There is no database row-level security; the configured database role is trusted.
-- Reads take the same plan lock as writes. The API adds bounded connection/statement/lock timeouts. Direct library clients configure their own. No connection pool or contention benchmark exists yet.
+- Full-plan snapshot reads take the same plan lock as writes; bounded plan discovery reads only metadata without a row lock. The API adds bounded connection/statement/lock timeouts. Direct library clients configure their own. No connection pool or contention benchmark exists yet.
 - Outbox records do not send calendar updates; provider delivery is LP-108.
 - Proposal expiration, history retention/deletion, account lifecycle, undo, and production backup/restore remain future work. History mutation triggers intentionally reject ordinary update/delete operations.
 - Persistence preserves UTC instants; recurrence and stored IANA user timezone remain later work.
+
+## Bounded plan discovery
+
+`store.list_plans(owner, limit=20, after=None)` returns immutable plan-ID/revision summaries and `next_after`. The owner is trusted internal input and comes from verified identity at the HTTP boundary. Page size is strictly 1–100; cursors use the API ID format. SQL filters ownership before seeking beyond the cursor and returns at most one extra metadata row to detect another page. It does not materialize items or acquire plan row locks. Listing is not a frozen multi-page snapshot or a capacity benchmark.

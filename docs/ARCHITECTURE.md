@@ -15,7 +15,7 @@ flowchart LR
   Worker --> Providers[Calendar providers]
 ```
 
-The planning core, adapter interfaces, and PostgreSQL storage for plans/proposals/history/outbox records exist today. The authenticated FastAPI service is implemented in `apps/api/`; the sample-only browser UI is implemented in `apps/web/`. The intent adapter and outbox delivery worker remain planned. See [persistence details](PERSISTENCE.md).
+The planning core, adapter interfaces, and PostgreSQL storage for plans/proposals/history/outbox records exist today. The authenticated FastAPI service is implemented in `apps/api/`; the sample-only browser UI is implemented in `apps/web/`. The provider-neutral intent boundary and optional OpenAI adapter are implemented but not connected to live credentials or the browser. The outbox delivery worker remains planned. See [persistence details](PERSISTENCE.md).
 
 ## Modules and ownership boundaries
 
@@ -64,3 +64,7 @@ Maintain synthetic fixtures covering ambiguous dates, multiple matching events, 
 ## Interim browser calendar boundary
 
 LP-103A uses a separate versioned localStorage calendar key, bounded to 500 events and 500000 serialized characters. Immutable proposals carry the base snapshot and revision; apply recomputes validation. Web Locks serialize cooperating tabs, while raw storage tokens detect stale writes. Invalid or oversized saved data is preserved and surfaced as an error. UTC instants are displayed in the browser timezone; ambiguous/nonexistent local input is rejected. This is device persistence, not authenticated isolation or a substitute for the API. Account migration must be explicit and owner-scoped in LP-103B.
+
+## Provider-neutral interpretation boundary
+
+LP-104A1 introduces a bounded asynchronous interpreter in `life_planner/intent.py`. The caller supplies authorized immutable context; provider output can yield a validated move, clarification, unsupported result or sanitized failure. Owner/plan/revision binding comes from trusted context, and a disposable planner checks move constraints. No persisted proposal or mutation occurs here. The next integration must atomically check that snapshot revision during stored proposal creation; the existing method lacks that check. See [AI integration](AI_INTEGRATION.md) for limits and the live-provider gates. Plan discovery now uses a bounded owner-scoped metadata query without snapshot row locks, while full plan reads retain their existing lock behavior.

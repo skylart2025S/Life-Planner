@@ -1,7 +1,8 @@
 """Transactional PostgreSQL planner. Caller identity must come from authentication.
 
 Each operation opens a fresh connection and transaction. All service access to a
-plan takes its row lock, ensuring consistent snapshots and serial application.
+snapshot takes its row lock, ensuring consistent reads and serial application.
+Plan discovery reads only bounded metadata without locking individual plans.
 The database role and DSN are trusted deployment configuration, not user input.
 """
 
@@ -9,6 +10,7 @@ from dataclasses import dataclass, replace
 from datetime import datetime
 from hashlib import sha256
 from pathlib import Path
+import re
 from uuid import uuid4
 
 import psycopg
@@ -22,6 +24,18 @@ from life_planner.planning import Change, PlanItem, Planner, Proposal, utc
 class PlanSnapshot:
     revision: int
     items: tuple[PlanItem, ...]
+
+
+@dataclass(frozen=True)
+class PlanSummary:
+    plan_id: str
+    revision: int
+
+
+@dataclass(frozen=True)
+class PlanPage:
+    plans: tuple[PlanSummary, ...]
+    next_after: str | None
 
 
 def _required(value: str, label: str) -> None:
@@ -132,6 +146,31 @@ class PostgresPlanner:
                          item.linked_to, item.fixed))
         except psycopg.errors.UniqueViolation as error:
             raise ValueError("Plan already exists") from error
+
+    def list_plans(self, user_id: str, *, limit: int = 20, after: str | None = None) -> PlanPage:
+        """Discover owned metadata using the database's plan-ID ordering.
+
+        This is not a multi-request snapshot: concurrent inserts before the
+        cursor require restarting discovery. A cursor need not name an existing
+        or owned plan; it is only an exclusive ordering boundary.
+        """
+        _required(user_id, "User ID")
+        if type(limit) is not int or not 1 <= limit <= 100:
+            raise ValueError("Limit must be an integer from 1 to 100")
+        if after is not None and (not isinstance(after, str)
+                                  or re.fullmatch(r"[A-Za-z0-9_-]{1,128}", after) is None):
+            raise ValueError("Invalid plan cursor")
+        with self._connect() as connection:
+            if after is None:
+                rows = connection.execute("""SELECT plan_id, revision FROM lp_plans
+                    WHERE user_id = %s ORDER BY plan_id LIMIT %s""",
+                    (user_id, limit + 1)).fetchall()
+            else:
+                rows = connection.execute("""SELECT plan_id, revision FROM lp_plans
+                    WHERE user_id = %s AND plan_id > %s ORDER BY plan_id LIMIT %s""",
+                    (user_id, after, limit + 1)).fetchall()
+        plans = tuple(PlanSummary(row["plan_id"], row["revision"]) for row in rows[:limit])
+        return PlanPage(plans, plans[-1].plan_id if len(rows) > limit else None)
 
     def read_plan(self, user_id: str, plan_id: str) -> PlanSnapshot:
         scope = self._scope(user_id, plan_id)

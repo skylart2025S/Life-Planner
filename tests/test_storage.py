@@ -72,6 +72,68 @@ class PostgresStorageTests(unittest.TestCase):
     def assert_effect_counts(self, count):
         self.assertEqual({"lp_changes": count, "lp_outbox": count}, self.counts())
 
+    def test_plan_discovery_empty_single_exact_and_multiple_pages(self):
+        from life_planner.storage import PlanPage, PlanSummary
+        self.assertEqual(PlanPage((), None), self.planner.list_plans("empty-owner"))
+        single = self.planner.list_plans(OWNER, limit=1)
+        self.assertEqual(PlanPage((PlanSummary(PLAN, 0),), None), single)
+        for plan_id in ("A", "a", "a-1", "a_1", "z", "Z"):
+            self.planner.create_plan(OWNER, plan_id, [])
+        with self.psycopg.connect(self.dsn) as conn:
+            expected = [row[0] for row in conn.execute(
+                "SELECT plan_id FROM lp_plans WHERE user_id = %s ORDER BY plan_id", (OWNER,))]
+        found, cursor = [], None
+        while True:
+            page = self.planner.list_plans(OWNER, limit=2, after=cursor)
+            found.extend(plan.plan_id for plan in page.plans)
+            if page.next_after is None:
+                break
+            self.assertEqual(page.plans[-1].plan_id, page.next_after)
+            cursor = page.next_after
+        self.assertEqual(expected, found)
+        self.assertIsNone(self.planner.list_plans(OWNER, limit=len(expected)).next_after)
+        self.assertEqual(100, len(self._discovery_large_page().plans))
+
+    def _discovery_large_page(self):
+        for index in range(101):
+            self.planner.create_plan("many", f"plan-{index:03}", [])
+        default = self.planner.list_plans("many")
+        self.assertEqual(20, len(default.plans))
+        self.assertEqual("plan-019", default.next_after)
+        page = self.planner.list_plans("many", limit=100)
+        self.assertEqual("plan-099", page.next_after)
+        self.assertEqual(["plan-100"], [plan.plan_id for plan in
+                         self.planner.list_plans("many", limit=100, after=page.next_after).plans])
+        return page
+
+    def test_plan_discovery_is_owner_scoped_with_arbitrary_cursors(self):
+        for owner, plan_ids in (("alice", ("a", "c", "e")), ("bob", ("a", "b", "e"))):
+            for plan_id in plan_ids:
+                self.planner.create_plan(owner, plan_id, [])
+        for cursor in ("b", "bb"):
+            page = self.planner.list_plans("alice", after=cursor, limit=1)
+            self.assertEqual(["c"], [plan.plan_id for plan in page.plans])
+            self.assertEqual("c", page.next_after)
+        self.assertEqual(["a", "b", "e"],
+                         [plan.plan_id for plan in self.planner.list_plans("bob").plans])
+        self.assertEqual((), self.planner.list_plans("alice", after="z").plans)
+
+    def test_plan_discovery_revision_survives_apply_and_restart(self):
+        self.assertEqual(0, self.planner.list_plans(OWNER).plans[0].revision)
+        self.apply(self.propose())
+        restarted = self.Planner(self.dsn)
+        self.assertEqual(1, restarted.list_plans(OWNER).plans[0].revision)
+        self.assert_effect_counts(1)
+
+    def test_plan_discovery_does_not_wait_for_plan_row_lock(self):
+        # A held row lock must not block this metadata-only SELECT.
+        with self.psycopg.connect(self.dsn) as conn:
+            conn.execute("SELECT * FROM lp_plans WHERE user_id = %s AND plan_id = %s FOR UPDATE",
+                         (OWNER, PLAN))
+            from psycopg.conninfo import make_conninfo
+            fast = self.Planner(make_conninfo(self.dsn, options=f"-c search_path={self.schema} -c lock_timeout=100"))
+            self.assertEqual(PLAN, fast.list_plans(OWNER).plans[0].plan_id)
+
     def test_migration_can_repeat_without_losing_existing_plan(self):
         before = self.planner.read_plan(OWNER, PLAN)
         self.migrate(self.dsn)

@@ -2,7 +2,7 @@
 
 A chat-driven calendar that keeps routines, meals, and clothing plans aligned when life changes.
 
-This is an **early local prototype**, not a deployed application. It includes an interactive month calendar and daily agenda, an authenticated planning API, PostgreSQL persistence, a deterministic planning core, and a coordinated development team workflow. The repository is https://github.com/skylart2025S/Life-Planner. No live AI provider, calendar account, or hosted production database is connected.
+This is an **early local prototype**, not a deployed application. It includes an interactive month calendar and daily agenda, an authenticated planning API, PostgreSQL persistence, a deterministic planning core, and a coordinated development team workflow. The repository is https://github.com/skylart2025S/Life-Planner. No live AI provider, calendar account, or hosted production database is connected. Provider-neutral AI interpretation work is described in [AI integration](docs/AI_INTEGRATION.md); its contract tests are not live AI.
 
 ## Try the visible prototype
 

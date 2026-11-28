@@ -55,10 +55,24 @@ one `Authorization: Bearer <access token>` header.
 
 | Route | Request | Success |
 | --- | --- | --- |
+| `GET /v1/plans?limit=20&after=...` | Optional page size and exclusive plan-ID cursor | 200 `{plans:[{plan_id,revision}],next_after}` |
 | `POST /v1/plans/{plan_id}` | `{items:[{id,title,kind,start,end,linked_to?,fixed?}]}` | 201 initial revision/items and Location |
 | `GET /v1/plans/{plan_id}?from=...&to=...` | Required aware interval, maximum 31 days | 200 revision plus overlapping items |
 | `POST /v1/plans/{plan_id}/proposals` | `{type:"move_item",item_id,new_start}` | 201 proposal ID, base revision, before/after changes and explanation |
 | `POST /v1/plans/{plan_id}/proposals/{proposal_id}/apply` | `{confirmed:true}` and one `Idempotency-Key` header | 200 original applied revision |
+
+Discovery returns only the authenticated owner's plan IDs and current revisions, never
+item content, owner IDs or a global total. `limit` defaults to 20 and accepts canonical
+decimal integers 1–100. `after` uses the existing ID format; omit it for the first
+page. Unknown or duplicate query parameters fail. Pass a non-null `next_after` as
+the next page's `after`. Null means the current page exhausted the matching rows.
+The database's plan-ID ordering is used for both comparison and sorting. A cursor
+is just an exclusive boundary; it need not refer to a real or owned plan. Discovery
+never looks up its existence under another owner. Pages are not a frozen snapshot:
+new plans sorting before the cursor require restarting the list. Revisions are
+informational until the selected plan is read and a proposal validated. The query
+reads at most `limit + 1` metadata rows, without loading items or locking plan rows.
+This endpoint enables a future saved-plan picker; the browser is not connected yet.
 
 Item outputs use UTC timestamps. Unknown body fields are rejected. Recreating an
 existing owner's plan returns 409 without overwriting it. Proposal creation does

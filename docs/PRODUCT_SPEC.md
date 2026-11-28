@@ -57,3 +57,7 @@ The user reaffirmed on 2026-11-20 that the full goal includes real AI, outfits a
 ## Personal calendar interim delivery (LP-103A)
 
 The fixed calendar sample is replaced by an empty device calendar with actual dates, user-entered one-off plans, before/after preview, explicit create/edit/move/delete confirmation, overlap prevention and fixed-time safeguards. Data persists only in this browser profile; there is no cloud backup, authenticated calendar connection or live AI interpretation. The manual wardrobe remains separate from events. LP-103B and the professional release gates remain open.
+
+## AI priority — November 27
+
+The user asked to begin AI development immediately and chose “No preference—build the integration first.” LP-104A1 begins the provider-neutral integration for move requests, clarification and unsupported outcomes, with output validation, bounded calls and cancellation. It does not interpret natural language without a real provider. Live evaluation, connected chat/confirmation, grounded recommendations and account integration remain acceptance requirements.
