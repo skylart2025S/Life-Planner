@@ -29,5 +29,7 @@ The unchanged implementation is independently source-accepted; exact commit bind
 - `git diff --check` passed. No implementation changed after these checks or independent acceptance.
 - Independent reviewer `api_ui_review` accepted the final source without blockers and independently passed 29 intent and 17 offline adapter tests. See the separate review report for exact file hashes and scope limitations.
 - The earlier attempt to persist the review report was blocked by an approval-service usage limit. Work was preserved without committing or bypassing the restriction. This cycle resumes authorized publication.
-- Commit/push/PR: pending. Remote CI and merged-main checks: not yet observed for this delivery. Deployment: not performed.
+- Implementation commit `92935a28a09f435d97e34c25b45268e810349f85` pushed to the task branch; [PR #6](https://github.com/skylart2025S/Life-Planner/pull/6) created and attached.
+- [Implementation CI](https://github.com/skylart2025S/Life-Planner/actions/runs/46087586539) passed all 134 Python tests with real PostgreSQL and all 24 JavaScript tests; no skips. The independent review is bound to this implementation SHA.
+- Final documentation-head CI and merged-main checks remain pending; the coordinator must verify both before reporting integration complete. Deployment: not performed.
 - Next concrete task: LP-104A2, atomic revision-bound proposal creation and stale/concurrent AI result rejection. Do not hold database locks during provider calls.
