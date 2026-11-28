@@ -14,7 +14,7 @@ from apps.api.config import Settings
 from apps.api.errors import APIError, error_response, storage_call
 from apps.api.middleware import RequestBoundsMiddleware
 from apps.api.models import (ApplyRequest, ApplyResponse, CreatePlan, ErrorResponse, ID_PATTERN,
-                             MoveRequest, PlanResponse, ProposalResponse, parse_time)
+                             MoveRequest, PlanListResponse, PlanResponse, ProposalResponse, parse_time)
 from life_planner.planning import PlanItem, utc
 from life_planner.storage import PostgresPlanner
 
@@ -75,6 +75,24 @@ def create_app(settings: Settings) -> FastAPI:
     @app.get("/health")
     def health():
         return {"status": "ok"}
+
+    @app.get("/v1/plans", response_model=PlanListResponse,
+             description="List owned plan IDs and revisions in database plan-ID order. "
+                         "Use next_after as the next exclusive cursor. This is not snapshot "
+                         "pagination; concurrent inserts before the cursor require a restart.")
+    def list_plans(request: Request,
+                   limit: Annotated[str, Query(pattern=r"^(?:[1-9][0-9]?|100)$",
+                                               description="Canonical decimal page size, 1–100")] = "20",
+                   after: Annotated[str | None, Query(min_length=1, max_length=128,
+                                                     pattern=ID_PATTERN)] = None,
+                   user_id: str = Depends(owner)):
+        if (set(request.query_params.keys()) - {"limit", "after"}
+                or any(len(request.query_params.getlist(name)) != 1
+                       for name in request.query_params.keys())):
+            raise APIError(400, "invalid_request", "Provide at most one limit and one after cursor")
+        page = storage_call("list", storage.list_plans, user_id, limit=int(limit), after=after)
+        return {"plans": [{"plan_id": plan.plan_id, "revision": plan.revision} for plan in page.plans],
+                "next_after": page.next_after}
 
     @app.post("/v1/plans/{plan_id}", status_code=201, response_model=PlanResponse)
     def create_plan(plan_id: ResourceID, body: CreatePlan, response: Response,

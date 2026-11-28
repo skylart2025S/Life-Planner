@@ -66,6 +66,33 @@ class AuthenticatedApiTests(SignedIdentityFixture, unittest.TestCase):
             return {table: conn.execute(sql.SQL("SELECT count(*) FROM {}").format(sql.Identifier(table))).fetchone()[0]
                     for table in ("lp_plans", "lp_proposals", "lp_changes", "lp_receipts", "lp_outbox")}
 
+    def test_discovery_lists_only_authenticated_owner_and_bounded_metadata(self):
+        self.assertEqual({"plans": [], "next_after": None},
+                         self.client.get("/v1/plans", headers=self.alice).json())
+        for headers, plan_ids in ((self.alice, ("a", "c", "e")), (self.bob, ("a", "b", "e"))):
+            for plan_id in plan_ids:
+                self.create_plan(headers=headers, url="/v1/plans/" + plan_id)
+        response = self.client.get("/v1/plans", headers={**self.alice, "X-User-ID": "bob"},
+                                   params={"limit": "1", "after": "b"})
+        self.assertEqual(200, response.status_code, response.text)
+        self.assertEqual({"plans": [{"plan_id": "c", "revision": 0}], "next_after": "c"}, response.json())
+        self.assertEqual("no-store", response.headers.get("cache-control"))
+        self.assertNotIn("items", response.text)
+        self.assertNotIn("user_id", response.text)
+        final = self.client.get("/v1/plans", headers=self.alice, params={"limit": "1", "after": "c"})
+        self.assertEqual({"plans": [{"plan_id": "e", "revision": 0}], "next_after": None}, final.json())
+        self.assertEqual(["a", "b", "e"], [plan["plan_id"] for plan in
+                         self.client.get("/v1/plans", headers=self.bob).json()["plans"]])
+
+    def test_discovery_revision_is_current_after_confirmed_apply_and_new_app(self):
+        from apps.api.app import create_app
+        self.create_plan()
+        self.assertEqual(200, self.apply(self.propose()["proposal_id"]).status_code)
+        with TestClient(create_app(self.settings(database_url=self.dsn))) as restarted:
+            response = restarted.get("/v1/plans", headers=self.alice)
+        self.assertEqual(200, response.status_code, response.text)
+        self.assertEqual({"plans": [{"plan_id": "week", "revision": 1}], "next_after": None}, response.json())
+
     def test_public_health_has_no_private_configuration(self):
         response = self.client.get("/health")
         self.assertEqual(200, response.status_code)

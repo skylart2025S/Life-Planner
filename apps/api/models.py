@@ -94,6 +94,16 @@ class PlanResponse(StrictModel):
     items: list[ItemResponse]
 
 
+class PlanSummaryResponse(StrictModel):
+    plan_id: Identifier
+    revision: Annotated[int, Field(strict=True, ge=0)]
+
+
+class PlanListResponse(StrictModel):
+    plans: Annotated[list[PlanSummaryResponse], Field(max_length=100)]
+    next_after: Identifier | None
+
+
 class ChangeResponse(StrictModel):
     before: ItemResponse
     after: ItemResponse
